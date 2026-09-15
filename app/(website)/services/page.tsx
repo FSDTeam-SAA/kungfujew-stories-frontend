@@ -1,30 +1,7 @@
+import Link from "next/link"
+import { services } from "@/lib/content"
+
 export default function ServicesPage() {
-  const services = [
-    {
-      title: "Vehicle Shipping",
-      description: "Reliable door-to-door transport for sedans, SUVs, trucks, and everything in between.",
-    },
-    {
-      title: "Classic & Exotic",
-      description: "Enclosed, winch-based transport with extra care for high-value and collectible vehicles.",
-    },
-    {
-      title: "Freight & Logistics",
-      description: "Scalable freight solutions for business logistics, equipment, and bulk shipments.",
-    },
-    {
-      title: "Heavy Equipment",
-      description: "Specialized hauling for construction and heavy machinery with the right equipment on site.",
-    },
-    {
-      title: "Auction Transportation",
-      description: "Coordinated pickup and delivery for auctions, dealerships, and inventory transfers.",
-    },
-    {
-      title: "International Shipping",
-      description: "Cross-border and port-to-door coordination for overseas vehicle movements.",
-    },
-  ];
 
   return (
     <div>
@@ -43,8 +20,7 @@ export default function ServicesPage() {
               <span className="text-[#0a192f]"> you.</span>
             </h1>
             <p className="text-sm sm:text-base md:text-[17px] text-slate-500 font-normal leading-relaxed max-w-2xl">
-              From delicate classic-car transport to large-scale freight, Car Carrier Group delivers
-              safe, transparent, and professional logistics.
+              Explore the information to gather before requesting vehicle, freight, or heavy-equipment transportation.
             </p>
           </div>
         </div>
@@ -54,10 +30,11 @@ export default function ServicesPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
             {services.map((s) => (
-              <div key={s.title} className="bg-white p-8 rounded-3xl border border-slate-200/80 shadow-xs hover:shadow-md transition-shadow">
+              <Link key={s.slug} href={`/services/${s.slug}`} className="bg-white p-8 rounded-3xl border border-slate-200/80 shadow-xs hover:shadow-md transition-shadow focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0d2861]">
                 <h3 className="text-lg font-bold text-slate-900 mb-2">{s.title}</h3>
-                <p className="text-sm text-slate-500 leading-relaxed">{s.description}</p>
-              </div>
+                <p className="text-sm text-slate-500 leading-relaxed">{s.summary}</p>
+                <span className="mt-5 inline-block text-sm font-bold text-[#0d2861]">Learn more</span>
+              </Link>
             ))}
           </div>
         </div>

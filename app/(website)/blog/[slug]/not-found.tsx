@@ -16,7 +16,7 @@ export default function StoryNotFound() {
           The shipment story you are looking for does not exist, has been removed, or is currently unpublished.
         </p>
         <div className="flex flex-wrap items-center justify-center gap-3">
-          <Link href="/blog">
+          <Link href="/stories">
             <Button className="bg-[#0d2861] hover:bg-[#091b42] text-white px-5 py-2.5 rounded-xl font-semibold text-xs sm:text-sm">
               <ArrowLeft className="w-4 h-4 mr-2" />
               View All Stories
@@ -32,4 +32,3 @@ export default function StoryNotFound() {
     </div>
   )
 }
-

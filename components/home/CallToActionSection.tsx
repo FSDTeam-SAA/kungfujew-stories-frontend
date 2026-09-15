@@ -1,6 +1,5 @@
-import Link from "next/link"
 import { ArrowRight } from "lucide-react"
-import { Button } from "@/components/ui/button"
+import { QuoteLink } from "@/components/shared/QuoteLink"
 
 const services = [
   "Vehicle Shipping",
@@ -47,14 +46,13 @@ export default function CallToActionSection() {
 
           {/* Right Side: Button */}
           <div className="flex-shrink-0">
-            <Button
-              className="bg-white hover:bg-slate-100 text-[#0d2861] text-[15px] font-bold px-7 py-6 rounded-xl shadow-md gap-2 transition-all duration-200"
+            <QuoteLink
+              placement="site-cta"
+              className="inline-flex items-center justify-center gap-3 rounded-xl bg-white px-7 py-3 text-[15px] font-bold text-[#0d2861] shadow-md transition-colors hover:bg-slate-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
             >
-              <Link href="/request-a-quote" className="flex items-center gap-3 justify-center ">
-                Get a Transportation Quote
-                <ArrowRight className="w-4 h-4" />
-              </Link>
-            </Button>
+              Request a quote from Car Carrier Group
+              <ArrowRight className="size-4" aria-hidden="true" />
+            </QuoteLink>
           </div>
 
         </div>

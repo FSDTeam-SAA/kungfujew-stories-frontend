@@ -15,8 +15,9 @@ export const authOptions: NextAuthOptions = {
         }
 
         try {
-          const apiUrl =
-            process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+          const apiUrl = (
+            process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"
+          ).replace(/\/+$/, "");
           const res = await fetch(`${apiUrl}/api/v1/auth/login`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -72,4 +73,3 @@ export const authOptions: NextAuthOptions = {
   },
   secret: process.env.NEXTAUTH_SECRET,
 };
-

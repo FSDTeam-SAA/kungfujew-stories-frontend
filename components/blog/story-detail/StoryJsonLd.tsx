@@ -1,12 +1,13 @@
 import { ShipmentStory } from "@/types/shipmentStory"
+import { siteConfig } from "@/lib/site"
 
 interface Props {
   story: ShipmentStory
 }
 
 export function StoryJsonLd({ story }: Props) {
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://carcarriergroup.com"
-  const storyUrl = `${siteUrl}/blog/${story.slug}`
+  const siteUrl = siteConfig.siteUrl
+  const storyUrl = `${siteUrl}/stories/${story.slug}`
 
   // 1. Article / BlogPosting Schema
   const articleSchema = {
@@ -57,7 +58,7 @@ export function StoryJsonLd({ story }: Props) {
         "@type": "ListItem",
         position: 2,
         name: "Shipment Stories",
-        item: `${siteUrl}/blog`,
+        item: `${siteUrl}/stories`,
       },
       {
         "@type": "ListItem",
@@ -104,4 +105,3 @@ export function StoryJsonLd({ story }: Props) {
     </>
   )
 }
-

@@ -1,5 +1,5 @@
-import Link from "next/link"
 import { ShipmentStory } from "@/types/shipmentStory"
+import { QuoteLink } from "@/components/shared/QuoteLink"
 
 interface Props {
   story: ShipmentStory
@@ -69,24 +69,25 @@ export function StorySnapshotSidebar({ story }: Props) {
 
           <div>
             <span className="text-[11px] font-medium text-slate-400 block mb-0.5">
-              Trailer Type
+              Service line
             </span>
             <span className="text-sm font-bold text-[#0a192f] block">
-              Dedicated Motor Carrier
+              {story.serviceLine || "Not specified"}
             </span>
           </div>
         </div>
 
         {/* Action Button */}
-        <Link
-          href="/request-a-quote"
+        <QuoteLink
+          placement="story-sidebar"
+          serviceLine={story.serviceLine}
+          storySlug={story.slug}
           className="mt-7 w-full block text-center py-3.5 px-6 rounded-xl bg-[#0d2861] hover:bg-[#091b42] text-white font-bold text-sm shadow-sm transition-all duration-200 cursor-pointer"
         >
-          Get a Quote
-        </Link>
+          Request a quote from Car Carrier Group
+        </QuoteLink>
 
       </div>
     </div>
   )
 }
-

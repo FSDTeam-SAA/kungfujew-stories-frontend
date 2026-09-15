@@ -1,7 +1,7 @@
 import Image from "next/image"
 import Link from "next/link"
-import { Button } from "@/components/ui/button"
 import { ArrowRight, MapPin } from "lucide-react"
+import { QuoteLink } from "@/components/shared/QuoteLink"
 
 export default function HeroSection() {
   return (
@@ -30,23 +30,20 @@ export default function HeroSection() {
 
             {/* Buttons */}
             <div className="flex flex-wrap items-center gap-4 mb-10">
-              <Button
-                className="bg-[#0d2861] hover:bg-[#081a40] text-white text-[15px] font-semibold px-6 py-6 rounded-lg gap-2 cursor-pointer transition-colors"
+              <QuoteLink
+                placement="home-hero"
+                className="inline-flex items-center rounded-lg bg-[#0d2861] px-6 py-3 text-[15px] font-semibold text-white transition-colors hover:bg-[#081a40] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0d2861]"
               >
-                <Link href="/request-a-quote" className="flex justify-center items-center">
-                  Request a Quote 
-                  <ArrowRight className="w-4 h-4 ml-1" />
-                </Link>
-              </Button>
+                Request a quote from Car Carrier Group
+                <ArrowRight className="ml-1 size-4" aria-hidden="true" />
+              </QuoteLink>
 
-              <Button
-                variant="secondary"
-                className="bg-[#f1f4f9] hover:bg-[#e4e9f2] text-[#0a192f] text-[15px] font-bold px-6 py-6 rounded-lg cursor-pointer transition-colors"
+              <Link
+                href="/stories"
+                className="rounded-lg bg-[#f1f4f9] px-6 py-3 text-[15px] font-bold text-[#0a192f] transition-colors hover:bg-[#e4e9f2] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0d2861]"
               >
-                <Link href="/shipments">
-                  Explore Shipments
-                </Link>
-              </Button>
+                Explore stories
+              </Link>
             </div>
 
             {/* Route / Nationwide Indicator */}

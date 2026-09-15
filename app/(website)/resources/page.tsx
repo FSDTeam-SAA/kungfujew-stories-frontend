@@ -1,22 +1,7 @@
+import Link from "next/link"
+import { resources } from "@/lib/content"
+
 export default function ResourcesPage() {
-  const resources = [
-    {
-      title: "Getting Started Guide",
-      description: "Learn how to book your first shipment and what to expect at pickup.",
-    },
-    {
-      title: "Shipping FAQ",
-      description: "Answers to the most common questions about costs, timelines, and preparation.",
-    },
-    {
-      title: "Real Shipment Stories",
-      description: "Read verified stories of real transportation we've handled.",
-    },
-    {
-      title: "Vehicle Prep Checklist",
-      description: "Prepare your vehicle for a safe and smooth transport experience.",
-    },
-  ];
 
   return (
     <div>
@@ -32,7 +17,7 @@ export default function ResourcesPage() {
               <span className="text-[#0a192f]"> need.</span>
             </h1>
             <p className="text-sm sm:text-base md:text-[17px] text-slate-500 font-normal leading-relaxed max-w-2xl">
-              Helpful guides, checklists, and verified stories to make your move stress-free.
+              Practical guides for understanding the quote, pickup, transit, inspection, and delivery process.
             </p>
           </div>
         </div>
@@ -42,10 +27,11 @@ export default function ResourcesPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 sm:gap-8">
             {resources.map((r) => (
-              <div key={r.title} className="bg-white p-8 rounded-3xl border border-slate-200/80 shadow-xs">
+              <Link key={r.slug} href={`/resources/${r.slug}`} className="bg-white p-8 rounded-3xl border border-slate-200/80 shadow-xs hover:shadow-md transition-shadow focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0d2861]">
                 <h3 className="text-lg font-bold text-slate-900 mb-2">{r.title}</h3>
                 <p className="text-sm text-slate-500 leading-relaxed">{r.description}</p>
-              </div>
+                <span className="mt-5 inline-block text-sm font-bold text-[#0d2861]">Read guide</span>
+              </Link>
             ))}
           </div>
         </div>

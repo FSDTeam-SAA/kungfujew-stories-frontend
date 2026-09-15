@@ -44,7 +44,7 @@ export default function ShipmentStoriesSection() {
     async function loadStories() {
       try {
         const res = await fetch(
-          `${API_BASE}/api/v1/real-shipment-stories?isPublished=true&limit=10`
+          `${API_BASE}api/v1/real-shipment-stories?isPublished=true&limit=10`
         )
         const json = await res.json()
         if (res.ok && json.success && Array.isArray(json.data)) {
@@ -121,7 +121,7 @@ export default function ShipmentStoriesSection() {
               return (
                 <Link
                   key={category}
-                  href="/blog"
+                  href="/stories"
                   className="whitespace-nowrap px-4 py-2 rounded-md text-xs sm:text-sm font-semibold transition-all bg-[#f1f4f9] text-[#1f2d3d] hover:bg-slate-200/80 shrink-0"
                 >
                   View All
@@ -226,7 +226,7 @@ export default function ShipmentStoriesSection() {
                 
                 {/* Left Image */}
                 <Link
-                  href={`/blog/${featuredStory.slug}`}
+                  href={`/stories/${featuredStory.slug}`}
                   className="lg:col-span-6 relative w-full h-[260px] sm:h-[340px] md:h-[380px] rounded-xl overflow-hidden block bg-slate-100"
                 >
                   {getSafeImage(featuredStory.image) ? (
@@ -253,9 +253,7 @@ export default function ShipmentStoriesSection() {
                     >
                       {featuredStory.shipmentType || "Real Shipment"}
                     </Badge>
-                    <span className="text-xs text-slate-400 font-normal">
-                      Verified Story
-                    </span>
+                    <span className="text-xs text-slate-400 font-normal">Shipment story</span>
                   </div>
 
                   {/* Location Route */}
@@ -267,7 +265,7 @@ export default function ShipmentStoriesSection() {
                   </div>
 
                   {/* Title */}
-                  <Link href={`/blog/${featuredStory.slug}`}>
+                  <Link href={`/stories/${featuredStory.slug}`}>
                     <h3 className="text-2xl sm:text-3xl font-extrabold text-[#0a192f] leading-snug tracking-tight mb-4 hover:text-[#0d2861] transition-colors">
                       {featuredStory.title}
                     </h3>
@@ -280,7 +278,7 @@ export default function ShipmentStoriesSection() {
 
                   {/* Read Full Story Link */}
                   <Link
-                    href={`/blog/${featuredStory.slug}`}
+                    href={`/stories/${featuredStory.slug}`}
                     className="inline-flex items-center gap-1.5 text-sm font-bold text-[#0d2861] hover:text-[#091b42] transition-colors"
                   >
                     Read Full Story
@@ -299,7 +297,7 @@ export default function ShipmentStoriesSection() {
                     className="bg-white border border-slate-200/80 rounded-2xl overflow-hidden flex flex-col shadow-sm hover:shadow-md transition-shadow group"
                   >
                     {/* Card Image */}
-                    <Link href={`/blog/${story.slug}`} className="relative w-full aspect-[16/10] block overflow-hidden bg-slate-100">
+                    <Link href={`/stories/${story.slug}`} className="relative w-full aspect-[16/10] block overflow-hidden bg-slate-100">
                       {getSafeImage(story.image) ? (
                         <Image
                           src={getSafeImage(story.image)}
@@ -331,7 +329,7 @@ export default function ShipmentStoriesSection() {
                       </div>
 
                       {/* Title */}
-                      <Link href={`/blog/${story.slug}`}>
+                      <Link href={`/stories/${story.slug}`}>
                         <h4 className="text-lg font-bold text-[#0a192f] tracking-tight mb-3 line-clamp-1 hover:text-[#0d2861] transition-colors">
                           {story.title}
                         </h4>
@@ -344,7 +342,7 @@ export default function ShipmentStoriesSection() {
 
                       {/* Link */}
                       <Link
-                        href={`/blog/${story.slug}`}
+                        href={`/stories/${story.slug}`}
                         className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold text-[#0d2861] hover:text-[#091b42] transition-colors pt-2"
                       >
                         Read Story

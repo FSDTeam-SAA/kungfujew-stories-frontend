@@ -16,7 +16,7 @@ export function StoryBreadcrumbBar({ story }: Props) {
             Home
           </Link>
           <span className="text-slate-300">/</span>
-          <Link href="/blog" className="hover:text-[#0d2861] transition-colors font-medium">
+          <Link href="/stories" className="hover:text-[#0d2861] transition-colors font-medium">
             Shipment Stories
           </Link>
           <span className="text-slate-300">/</span>
@@ -28,7 +28,7 @@ export function StoryBreadcrumbBar({ story }: Props) {
         <div className="flex items-center gap-3 shrink-0">
           <StoryShareButton title={story.title} />
           <Link
-            href="/blog"
+            href="/stories"
             className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold text-[#0d2861] hover:text-[#091b42] transition-colors"
           >
             <ArrowLeft className="w-4 h-4" />
@@ -39,4 +39,3 @@ export function StoryBreadcrumbBar({ story }: Props) {
     </div>
   )
 }
-

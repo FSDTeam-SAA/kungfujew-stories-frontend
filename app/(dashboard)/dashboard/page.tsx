@@ -30,6 +30,8 @@ interface FAQ {
   answer: string;
 }
 
+type ServiceLine = "vehicle" | "freight" | "heavy-equipment";
+
 interface ShipmentStory {
   _id: string;
   title: string;
@@ -39,6 +41,7 @@ interface ShipmentStory {
   pickupLocation: string;
   destination: string;
   shipmentType: string;
+  serviceLine?: ServiceLine;
   shipmentStatus: "pending" | "in_transit" | "delivered" | "cancelled";
   image?: string;
   imageAlt?: string;
@@ -48,7 +51,7 @@ interface ShipmentStory {
   updatedAt: string;
 }
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+const API_BASE = (process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000").replace(/\/+$/, "");
 
 export default function RealShipmentStoriesPage() {
   const { data: session } = useSession();
@@ -88,6 +91,7 @@ export default function RealShipmentStoriesPage() {
     pickupLocation: "",
     destination: "",
     shipmentType: "Classic & Exotic",
+    serviceLine: "" as ServiceLine | "",
     shipmentStatus: "pending" as "pending" | "in_transit" | "delivered" | "cancelled",
     image: "",
     imageAlt: "",
@@ -186,6 +190,7 @@ export default function RealShipmentStoriesPage() {
       pickupLocation: "",
       destination: "",
       shipmentType: "Classic & Exotic",
+      serviceLine: "",
       shipmentStatus: "delivered",
       image: "",
       imageAlt: "",
@@ -212,6 +217,7 @@ export default function RealShipmentStoriesPage() {
       pickupLocation: story.pickupLocation || "",
       destination: story.destination || "",
       shipmentType: story.shipmentType || "Classic & Exotic",
+      serviceLine: story.serviceLine || "",
       shipmentStatus: story.shipmentStatus || "pending",
       image: story.image || "",
       imageAlt: story.imageAlt || "",
@@ -275,7 +281,8 @@ export default function RealShipmentStoriesPage() {
       !hasContent ||
       !formData.pickupLocation.trim() ||
       !formData.destination.trim() ||
-      !formData.shipmentType.trim()
+      !formData.shipmentType.trim() ||
+      !formData.serviceLine
     ) {
       setModalError("Please complete all required fields including story content.");
       return;
@@ -300,6 +307,7 @@ export default function RealShipmentStoriesPage() {
       submitData.append("pickupLocation", formData.pickupLocation.trim());
       submitData.append("destination", formData.destination.trim());
       submitData.append("shipmentType", formData.shipmentType.trim());
+      submitData.append("serviceLine", formData.serviceLine);
       submitData.append("shipmentStatus", formData.shipmentStatus);
       submitData.append("isPublished", String(formData.isPublished));
 
@@ -872,7 +880,7 @@ export default function RealShipmentStoriesPage() {
                 </div>
 
                 {/* Shipment Type (Category) & Status */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div>
                     <label className="block font-semibold text-slate-700 mb-1">
                       Category / Shipment Type <span className="text-red-500">*</span>
@@ -887,6 +895,28 @@ export default function RealShipmentStoriesPage() {
                       placeholder="e.g. Classic & Exotic / Vintage Bikes"
                       className="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#0c2340] focus:bg-white"
                     />
+                  </div>
+
+                  <div>
+                    <label className="block font-semibold text-slate-700 mb-1">
+                      Service line <span className="text-red-500">*</span>
+                    </label>
+                    <select
+                      required
+                      value={formData.serviceLine}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          serviceLine: e.target.value as ServiceLine,
+                        })
+                      }
+                      className="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-lg text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#0c2340] focus:bg-white"
+                    >
+                      <option value="">Choose a service line</option>
+                      <option value="vehicle">Vehicle shipping</option>
+                      <option value="freight">Freight</option>
+                      <option value="heavy-equipment">Heavy equipment</option>
+                    </select>
                   </div>
 
                   <div>

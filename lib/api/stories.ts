@@ -1,6 +1,7 @@
 import { ShipmentStory } from "@/types/shipmentStory"
+import type { ServiceLine } from "@/lib/site"
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"
+const API_BASE = (process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000").replace(/\/$/, "")
 
 export async function getStoryBySlug(slug: string): Promise<ShipmentStory | null> {
   if (!slug) return null
@@ -35,11 +36,17 @@ export async function getStoryBySlug(slug: string): Promise<ShipmentStory | null
 
 export async function getRecentStories(
   excludeSlug?: string,
-  limit = 3
+  limit = 3,
+  serviceLine?: ServiceLine
 ): Promise<ShipmentStory[]> {
   try {
+    const params = new URLSearchParams({
+      isPublished: "true",
+      limit: String(limit + 2),
+    })
+    if (serviceLine) params.set("serviceLine", serviceLine)
     const res = await fetch(
-      `${API_BASE}/api/v1/real-shipment-stories?isPublished=true&limit=${limit + 2}`,
+      `${API_BASE}/api/v1/real-shipment-stories?${params}`,
       { next: { revalidate: 60 } }
     )
     if (!res.ok) return []

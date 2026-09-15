@@ -1,7 +1,6 @@
-import Link from "next/link"
-import { ArrowRight, Phone, ShieldCheck, Truck } from "lucide-react"
-import { Button } from "@/components/ui/button"
+import { ArrowRight } from "lucide-react"
 import { ShipmentStory } from "@/types/shipmentStory"
+import { QuoteLink } from "@/components/shared/QuoteLink"
 
 interface Props {
   story: ShipmentStory
@@ -47,8 +46,8 @@ export function StorySidebar({ story }: Props) {
             <span className="font-semibold capitalize text-right">{statusLabel}</span>
           </div>
           <div className="flex items-start justify-between gap-2">
-            <span className="text-slate-500">Logistics Type</span>
-            <span className="font-semibold text-emerald-700 text-right">Dedicated Carrier</span>
+            <span className="text-slate-500">Service line</span>
+            <span className="font-semibold text-right">{story.serviceLine || "Not specified"}</span>
           </div>
         </div>
       </div>
@@ -60,36 +59,18 @@ export function StorySidebar({ story }: Props) {
             Need Similar Transport?
           </span>
           <h4 className="text-xl font-extrabold text-white tracking-tight leading-snug mb-3">
-            Get a Guaranteed Move Quote
+            Request a transportation quote
           </h4>
           <p className="text-xs sm:text-sm text-slate-300 leading-relaxed mb-6">
-            Coordinating vehicles, freight, and heavy equipment across all 50 states with certified carriers.
+            Continue to Car Carrier Group&apos;s quote form to share the details needed for your shipment.
           </p>
-          <Link href="/request-a-quote" className="block w-full">
-            <Button className="w-full bg-white hover:bg-slate-100 text-[#0d2861] font-bold py-5 rounded-xl shadow-sm gap-2 text-sm transition-all cursor-pointer">
+          <QuoteLink placement="story-sidebar" serviceLine={story.serviceLine} storySlug={story.slug} className="flex w-full items-center justify-center gap-2 rounded-xl bg-white py-3 text-sm font-bold text-[#0d2861] shadow-sm transition-colors hover:bg-slate-100">
               Request Quote
               <ArrowRight className="w-4 h-4" />
-            </Button>
-          </Link>
+          </QuoteLink>
         </div>
       </div>
 
-      {/* Trust & Guarantees */}
-      <div className="bg-slate-50 border border-slate-200/70 rounded-2xl p-5 text-xs text-slate-600 space-y-3">
-        <div className="flex items-center gap-2.5 font-semibold text-slate-800">
-          <ShieldCheck className="w-4 h-4 text-[#0d2861] shrink-0" />
-          <span>FMCSA Licensed & Bonded Broker</span>
-        </div>
-        <div className="flex items-center gap-2.5 font-semibold text-slate-800">
-          <Truck className="w-4 h-4 text-[#0d2861] shrink-0" />
-          <span>Full Cargo Insurance On Every Load</span>
-        </div>
-        <div className="flex items-center gap-2.5 font-semibold text-slate-800">
-          <Phone className="w-4 h-4 text-[#0d2861] shrink-0" />
-          <span>Dedicated Coordinator Support</span>
-        </div>
-      </div>
     </div>
   )
 }
-
