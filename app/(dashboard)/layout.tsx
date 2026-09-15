@@ -7,6 +7,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { signOut, useSession } from "next-auth/react";
 import {
   LayoutGrid,
+  Briefcase,
   Settings,
   LogOut,
   Loader2,
@@ -57,6 +58,7 @@ export default function DashboardLayout({
     .toUpperCase() || "SA";
 
   const isSettingsPage = pathname.startsWith("/dashboard/settings");
+  const isProjectsPage = pathname.startsWith("/dashboard/projects");
 
   return (
     <div className="min-h-screen flex bg-[#f8fafc]">
@@ -90,6 +92,18 @@ export default function DashboardLayout({
               >
                 <LayoutGrid className="w-4 h-4 shrink-0 text-blue-300" />
                 <span className="truncate">Real Shipment Stories</span>
+              </Link>
+
+              <Link
+                href="/dashboard/projects"
+                className={`w-full flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-sm font-semibold transition-all ${
+                  isProjectsPage
+                    ? "bg-[#0c2340] text-white shadow-xs"
+                    : "text-slate-600 hover:bg-slate-100"
+                }`}
+              >
+                <Briefcase className="w-4 h-4 shrink-0 text-blue-300" />
+                <span className="truncate">Projects</span>
               </Link>
 
               <Link
@@ -149,7 +163,11 @@ export default function DashboardLayout({
         <header className="h-20 bg-white border-b border-slate-200/80 px-6 sm:px-8 flex items-center justify-between sticky top-0 z-30 shadow-xs">
           <div>
             <h1 className="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight">
-              {isSettingsPage ? "Account Settings" : "Real Shipment Stories"}
+              {isSettingsPage
+                ? "Account Settings"
+                : isProjectsPage
+                ? "Projects"
+                : "Real Shipment Stories"}
             </h1>
             <p className="text-xs text-slate-500 mt-0.5">
               {isSettingsPage

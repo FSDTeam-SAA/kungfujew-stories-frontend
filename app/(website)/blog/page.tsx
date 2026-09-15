@@ -1,21 +1,8 @@
-import ShipmentFilterBar from "@/components/blog/ShipmentFilterBar";
-import StoriesHero from "@/components/blog/StoriesHero";
-import WorkBehindTheMoveSection from "@/components/blog/WorkBehindTheMoveSection";
-import CallToActionSection from "@/components/home/CallToActionSection";
-// import MoreResourcesSection from "@/components/home/MoreResourcesSection";
-import Footer from "@/components/home/Footer";
-import React from "react";
+"use client";
 
-export default function BlogPage() {
-  return (
-    <div>
-      <StoriesHero />
-      <ShipmentFilterBar />
-      <WorkBehindTheMoveSection />
-      {/* <MoreResourcesSection /> */}
-      <CallToActionSection/>
-      <Footer />
-    </div>
-  );
+import { redirect } from "next/navigation";
+
+export default function BlogRedirect() {
+  redirect("/shipment-stories");
 }
 
