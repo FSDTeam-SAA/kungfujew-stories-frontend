@@ -1,9 +1,5 @@
 const configuredSiteUrl = process.env.NEXT_PUBLIC_SITE_URL
 
-if (process.env.NODE_ENV === "production" && !configuredSiteUrl) {
-  throw new Error("NEXT_PUBLIC_SITE_URL must be configured for production")
-}
-
 const siteUrl = configuredSiteUrl || "https://stories.carcarriergroup.com"
 
 try {
