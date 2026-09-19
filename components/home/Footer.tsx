@@ -1,6 +1,7 @@
 import Image from "next/image"
 import Link from "next/link"
 import { ArrowRight } from "lucide-react"
+import { QuoteLink } from "@/components/shared/QuoteLink"
 
 const footerLinks = {
   services: [
@@ -9,9 +10,8 @@ const footerLinks = {
     { title: "Heavy Equipment", href: "/services/heavy-equipment" },
   ],
   company: [
-    { title: "Shipment Stories", href: "/shipment-stories" },
+    { title: "Shipment Stories", href: "/stories" },
     { title: "Resources", href: "/resources" },
-    { title: "Request a Quote", href: "/request-a-quote" },
   ],
 }
 
@@ -84,15 +84,15 @@ export default function Footer() {
               Connect
             </h4>
             <p className="text-xs sm:text-[13px] text-slate-600 mb-3">
-              Available seven days a week
+              Continue to Car Carrier Group&apos;s secure quote form.
             </p>
-            <Link
-              href="/request-a-quote"
+            <QuoteLink
+              placement="footer"
               className="inline-flex items-center gap-1.5 text-xs sm:text-[13px] font-bold text-[#0d2861] hover:text-[#081a40] transition-colors"
             >
-              Get a quote
+              Request a quote
               <ArrowRight className="w-3.5 h-3.5" />
-            </Link>
+            </QuoteLink>
           </div>
 
         </div>
@@ -100,7 +100,7 @@ export default function Footer() {
         {/* Bottom Bar: Copyright & Disclaimer */}
         <div className="pt-6 border-t border-slate-200/80 flex flex-col sm:flex-row items-center justify-between gap-3 text-[11px] sm:text-xs text-slate-500 font-normal">
           <p>© Car Carrier Group. All rights reserved.</p>
-          <p>Placeholder shipment stories are provided for demonstration purposes.</p>
+          <p>Quote requests are handled on the Car Carrier Group website.</p>
         </div>
 
       </div>

@@ -1,5 +1,6 @@
 import Link from "next/link"
 import { ArrowLeft, Home, Truck, MapPinOff } from "lucide-react"
+import { Button } from "@/components/ui/button"
 
 export default function StoryNotFound() {
   return (
@@ -27,12 +28,11 @@ export default function StoryNotFound() {
         </p>
 
         <div className="flex flex-wrap items-center justify-center gap-3">
-          <Link
-            href="/blog"
-            className="inline-flex items-center gap-2 bg-[#0d2861] hover:bg-[#091b42] text-white px-5 py-3 rounded-xl font-semibold text-xs sm:text-sm shadow-sm transition-all"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            <span>Browse All Stories</span>
+          <Link href="/stories">
+            <Button className="bg-[#0d2861] hover:bg-[#091b42] text-white px-5 py-2.5 rounded-xl font-semibold text-xs sm:text-sm">
+              <ArrowLeft className="w-4 h-4 mr-2" />
+              View All Stories
+            </Button>
           </Link>
           <Link
             href="/"
@@ -46,5 +46,3 @@ export default function StoryNotFound() {
     </div>
   )
 }
-
-

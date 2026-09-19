@@ -12,6 +12,7 @@ export interface ShipmentStory {
   pickupLocation: string
   destination: string
   shipmentType: string
+  serviceLine?: "vehicle" | "freight" | "heavy-equipment"
   shipmentStatus: "pending" | "in_transit" | "delivered" | "cancelled" | string
   image?: string
   imageAlt?: string
@@ -20,4 +21,3 @@ export interface ShipmentStory {
   createdAt: string
   updatedAt?: string
 }
-

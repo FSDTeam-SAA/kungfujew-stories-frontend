@@ -17,67 +17,172 @@ interface ShipmentStory {
   destination: string
   shipmentType: string
   shipmentStatus: string
+  serviceLine?: string
   image?: string
   imageAlt?: string
   isPublished: boolean
   createdAt: string
 }
 
-const categories = [
-  "All Stories",
-  "Vehicle Shipping",
-  "Freight",
-  "Heavy Equipment",
-  "Auction Transportation",
-  "Classic & Exotic",
-  "View All",
+interface ShipmentStoriesSectionProps {
+  initialStories?: ShipmentStory[]
+}
+
+const CANDIDATE_CATEGORIES = [
+  {
+    label: "Vehicle Shipping",
+    matches: (s: ShipmentStory) => {
+      const type = (s.shipmentType || "").toLowerCase().trim()
+      const line = (s.serviceLine || "").toLowerCase().trim()
+      const title = (s.title || "").toLowerCase().trim()
+      if (line === "vehicle") return true
+      if (type === "vehicle shipping" || type.includes("vehicle")) return true
+      if (/vehicle|car|auto|truck|suv|motorcycle|bike|van|sedan|coupe|transport/.test(type)) return true
+      if (/\b(car|auto|truck|vehicle|suv|sedan|motorcycle)\b/.test(title)) return true
+      return false
+    },
+  },
+  {
+    label: "Freight",
+    matches: (s: ShipmentStory) => {
+      const type = (s.shipmentType || "").toLowerCase().trim()
+      const line = (s.serviceLine || "").toLowerCase().trim()
+      const title = (s.title || "").toLowerCase().trim()
+      if (line === "freight") return true
+      if (type === "freight" || type.includes("freight")) return true
+      if (/freight|cargo|pallet|ltl|ftl|dry van|flatbed|box truck|commercial/.test(type)) return true
+      if (/\b(freight|cargo|pallet|ltl|ftl)\b/.test(title)) return true
+      return false
+    },
+  },
+  {
+    label: "Heavy Equipment",
+    matches: (s: ShipmentStory) => {
+      const type = (s.shipmentType || "").toLowerCase().trim()
+      const line = (s.serviceLine || "").toLowerCase().trim()
+      const title = (s.title || "").toLowerCase().trim()
+      if (line === "heavy-equipment") return true
+      if (type === "heavy equipment" || type.includes("heavy") || type.includes("equipment")) return true
+      if (/heavy|equipment|machin|tractor|excavat|industrial|oversize|crane|loader|dozer|forklift/.test(type)) return true
+      if (/\b(heavy|equipment|machinery|tractor|excavator|crane|dozer|forklift)\b/.test(title)) return true
+      return false
+    },
+  },
+  {
+    label: "Auction Transportation",
+    matches: (s: ShipmentStory) => {
+      const type = (s.shipmentType || "").toLowerCase().trim()
+      const title = (s.title || "").toLowerCase().trim()
+      if (type === "auction transportation" || type.includes("auction")) return true
+      if (/auction|copart|iaai|manheim|salvage|dealer/.test(type)) return true
+      if (/\b(auction|copart|iaai|manheim)\b/.test(title)) return true
+      return false
+    },
+  },
+  {
+    label: "Classic & Exotic",
+    matches: (s: ShipmentStory) => {
+      const type = (s.shipmentType || "").toLowerCase().trim()
+      const title = (s.title || "").toLowerCase().trim()
+      if (type === "classic & exotic" || type.includes("classic") || type.includes("exotic")) return true
+      if (/classic|exotic|vintage|antique|muscle|luxury|sport|collector/.test(type)) return true
+      if (/\b(classic|exotic|vintage|antique|muscle|collector|camaro|corvette|mustang|ferrari|porsche)\b/.test(title)) return true
+      return false
+    },
+  },
 ]
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"
+const API_BASE = (process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000").replace(/\/$/, "")
 
-export default function ShipmentStoriesSection() {
+export default function ShipmentStoriesSection({
+  initialStories = [],
+}: ShipmentStoriesSectionProps) {
   const [activeCategory, setActiveCategory] = React.useState("All Stories")
-  const [stories, setStories] = React.useState<ShipmentStory[]>([])
-  const [loading, setLoading] = React.useState(true)
+  const [stories, setStories] = React.useState<ShipmentStory[]>(initialStories)
+  const [loading, setLoading] = React.useState(initialStories.length === 0)
 
   React.useEffect(() => {
+    if (initialStories.length > 0) return
+
+    let isMounted = true
+
     async function loadStories() {
       try {
         const res = await fetch(
-          `${API_BASE}/api/v1/real-shipment-stories?isPublished=true&limit=10`
+          `${API_BASE}/api/v1/real-shipment-stories?isPublished=true&limit=30`
         )
         const json = await res.json()
-        if (res.ok && json.success && Array.isArray(json.data)) {
+        if (isMounted && res.ok && json.success && Array.isArray(json.data)) {
           setStories(json.data)
         }
       } catch (err) {
         console.error("Error loading shipment stories:", err)
       } finally {
-        setLoading(false)
+        if (isMounted) {
+          setLoading(false)
+        }
       }
     }
+
     loadStories()
-  }, [])
+
+    return () => {
+      isMounted = false
+    }
+  }, [initialStories.length])
+
+  // Only show categories that have available stories in the published dataset
+  const availableCategories = React.useMemo(() => {
+    if (!stories || stories.length === 0) {
+      return ["All Stories", "View All"]
+    }
+
+    const available: string[] = ["All Stories"]
+
+    for (const cat of CANDIDATE_CATEGORIES) {
+      const hasStories = stories.some((story) => cat.matches(story))
+      if (hasStories) {
+        available.push(cat.label)
+      }
+    }
+
+    // Include any distinct custom shipmentTypes if present
+    const customTypes = new Set<string>()
+    for (const s of stories) {
+      const raw = s.shipmentType?.trim()
+      if (!raw) continue
+      const matchesStandard = CANDIDATE_CATEGORIES.some((c) => c.matches(s))
+      if (!matchesStandard) {
+        customTypes.add(raw)
+      }
+    }
+    for (const ct of customTypes) {
+      available.push(ct)
+    }
+
+    available.push("View All")
+    return available
+  }, [stories])
+
+  // Active category defaults to "All Stories" if chosen category is no longer available
+  const currentCategory = availableCategories.includes(activeCategory)
+    ? activeCategory
+    : "All Stories"
 
   // Filter stories by category
-  const filteredStories = React.useMemo(() => {
-    if (!stories || stories.length === 0) return []
-    if (activeCategory === "All Stories" || activeCategory === "View All") {
-      return stories
+  let filteredStories = stories
+  if (stories && stories.length > 0 && currentCategory !== "All Stories" && currentCategory !== "View All") {
+    const candidate = CANDIDATE_CATEGORIES.find((c) => c.label === currentCategory)
+    if (candidate) {
+      filteredStories = stories.filter((story) => candidate.matches(story))
+    } else {
+      const catLower = currentCategory.toLowerCase().trim()
+      filteredStories = stories.filter((s) => {
+        const typeLower = (s.shipmentType || "").toLowerCase().trim()
+        return typeLower === catLower || typeLower.includes(catLower) || catLower.includes(typeLower)
+      })
     }
-    const cat = activeCategory.toLowerCase().trim()
-    return stories.filter((s) => {
-      const type = (s.shipmentType || "").toLowerCase().trim()
-      if (type.includes(cat) || cat.includes(type)) return true
-      if (
-        (cat === "vehicle shipping" || cat.includes("vehicle")) &&
-        (type.includes("car") || type.includes("auto") || type.includes("truck") || type.includes("suv") || type.includes("vehicle"))
-      ) {
-        return true
-      }
-      return false
-    })
-  }, [stories, activeCategory])
+  }
 
   const featuredStory = filteredStories.length > 0 ? filteredStories[0] : null
   const gridStories = filteredStories.length > 1 ? filteredStories.slice(1, 4) : []
@@ -113,16 +218,16 @@ export default function ShipmentStoriesSection() {
           </p>
         </div>
 
-        {/* Filter Pill Tabs */}
-        <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none mb-10">
-          {categories.map((category) => {
-            const isActive = activeCategory === category
+        {/* Filter Pill Tabs (Styled like blog page, only available categories shown) */}
+        <div className="flex items-center gap-2.5 overflow-x-auto pb-1 scrollbar-none mb-10">
+          {availableCategories.map((category) => {
+            const isActive = currentCategory === category
             if (category === "View All") {
               return (
                 <Link
                   key={category}
-                  href="/blog"
-                  className="whitespace-nowrap px-4 py-2 rounded-md text-xs sm:text-sm font-semibold transition-all bg-[#f1f4f9] text-[#1f2d3d] hover:bg-slate-200/80 shrink-0"
+                  href="/stories"
+                  className="whitespace-nowrap px-4 py-2.5 rounded-lg text-xs sm:text-[13px] font-bold transition-all bg-white border border-slate-200/80 text-[#0a192f] hover:bg-slate-50 hover:border-slate-300 shrink-0"
                 >
                   View All
                 </Link>
@@ -131,11 +236,12 @@ export default function ShipmentStoriesSection() {
             return (
               <button
                 key={category}
+                type="button"
                 onClick={() => setActiveCategory(category)}
-                className={`whitespace-nowrap px-4 py-2 rounded-md text-xs sm:text-sm font-semibold transition-all cursor-pointer shrink-0 ${
+                className={`whitespace-nowrap px-4 py-2.5 rounded-lg text-xs sm:text-[13px] font-bold transition-all cursor-pointer shrink-0 ${
                   isActive
                     ? "bg-[#0d2861] text-white shadow-sm"
-                    : "bg-[#f1f4f9] text-[#1f2d3d] hover:bg-slate-200/80"
+                    : "bg-white border border-slate-200/80 text-[#0a192f] hover:bg-slate-50 hover:border-slate-300"
                 }`}
               >
                 {category}
@@ -226,7 +332,7 @@ export default function ShipmentStoriesSection() {
                 
                 {/* Left Image */}
                 <Link
-                  href={`/blog/${featuredStory.slug}`}
+                  href={`/stories/${featuredStory.slug}`}
                   className="lg:col-span-6 relative w-full h-[260px] sm:h-[340px] md:h-[380px] rounded-xl overflow-hidden block bg-slate-100"
                 >
                   {getSafeImage(featuredStory.image) ? (
@@ -253,21 +359,25 @@ export default function ShipmentStoriesSection() {
                     >
                       {featuredStory.shipmentType || "Real Shipment"}
                     </Badge>
-                    <span className="text-xs text-slate-400 font-normal">
-                      Verified Story
-                    </span>
+                    <span className="text-xs text-slate-400 font-normal">Shipment story</span>
                   </div>
 
                   {/* Location Route */}
-                  <div className="flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-[#0a192f] mb-4">
-                    <MapPin className="w-3.5 h-3.5 text-slate-500" />
-                    <span>{featuredStory.pickupLocation}</span>
-                    <ArrowRight className="w-3.5 h-3.5 text-slate-400" />
-                    <span>{featuredStory.destination}</span>
-                  </div>
+                  {(featuredStory.pickupLocation || featuredStory.destination) && (
+                    <div className="flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-[#0a192f] mb-4">
+                      <MapPin className="w-3.5 h-3.5 text-slate-500" />
+                      <span>{featuredStory.pickupLocation}</span>
+                      {featuredStory.destination && (
+                        <>
+                          <ArrowRight className="w-3.5 h-3.5 text-slate-400" />
+                          <span>{featuredStory.destination}</span>
+                        </>
+                      )}
+                    </div>
+                  )}
 
                   {/* Title */}
-                  <Link href={`/blog/${featuredStory.slug}`}>
+                  <Link href={`/stories/${featuredStory.slug}`}>
                     <h3 className="text-2xl sm:text-3xl font-extrabold text-[#0a192f] leading-snug tracking-tight mb-4 hover:text-[#0d2861] transition-colors">
                       {featuredStory.title}
                     </h3>
@@ -280,7 +390,7 @@ export default function ShipmentStoriesSection() {
 
                   {/* Read Full Story Link */}
                   <Link
-                    href={`/blog/${featuredStory.slug}`}
+                    href={`/stories/${featuredStory.slug}`}
                     className="inline-flex items-center gap-1.5 text-sm font-bold text-[#0d2861] hover:text-[#091b42] transition-colors"
                   >
                     Read Full Story
@@ -299,7 +409,7 @@ export default function ShipmentStoriesSection() {
                     className="bg-white border border-slate-200/80 rounded-2xl overflow-hidden flex flex-col shadow-sm hover:shadow-md transition-shadow group"
                   >
                     {/* Card Image */}
-                    <Link href={`/blog/${story.slug}`} className="relative w-full aspect-[16/10] block overflow-hidden bg-slate-100">
+                    <Link href={`/stories/${story.slug}`} className="relative w-full aspect-[16/10] block overflow-hidden bg-slate-100">
                       {getSafeImage(story.image) ? (
                         <Image
                           src={getSafeImage(story.image)}
@@ -323,15 +433,19 @@ export default function ShipmentStoriesSection() {
                       </span>
 
                       {/* Location Line */}
-                      <div className="flex items-center gap-1.5 text-xs font-semibold text-slate-600 mb-3">
-                        <MapPin className="w-3.5 h-3.5 flex-shrink-0 text-slate-400" />
-                        <span className="truncate">
-                          Pickup: {story.pickupLocation} → Destination: {story.destination}
-                        </span>
-                      </div>
+                      {(story.pickupLocation || story.destination) && (
+                        <div className="flex items-center gap-1.5 text-xs font-semibold text-slate-600 mb-3">
+                          <MapPin className="w-3.5 h-3.5 flex-shrink-0 text-slate-400" />
+                          <span className="truncate">
+                            {story.pickupLocation && story.destination
+                              ? `Pickup: ${story.pickupLocation} → Destination: ${story.destination}`
+                              : story.pickupLocation || story.destination}
+                          </span>
+                        </div>
+                      )}
 
                       {/* Title */}
-                      <Link href={`/blog/${story.slug}`}>
+                      <Link href={`/stories/${story.slug}`}>
                         <h4 className="text-lg font-bold text-[#0a192f] tracking-tight mb-3 line-clamp-1 hover:text-[#0d2861] transition-colors">
                           {story.title}
                         </h4>
@@ -344,7 +458,7 @@ export default function ShipmentStoriesSection() {
 
                       {/* Link */}
                       <Link
-                        href={`/blog/${story.slug}`}
+                        href={`/stories/${story.slug}`}
                         className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold text-[#0d2861] hover:text-[#091b42] transition-colors pt-2"
                       >
                         Read Story

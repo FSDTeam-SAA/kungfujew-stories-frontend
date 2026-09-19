@@ -6,6 +6,7 @@ import Link from "next/link"
 import { ArrowRight, ChevronLeft, ChevronRight, MapPin, Truck } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { Skeleton } from "@/components/ui/skeleton"
+import type { ServiceLine } from "@/lib/site"
 
 interface ShipmentStory {
   _id: string
@@ -17,15 +18,24 @@ interface ShipmentStory {
   destination: string
   shipmentType: string
   shipmentStatus: string
+  serviceLine?: ServiceLine
   image?: string
   imageAlt?: string
   isPublished: boolean
   createdAt: string
 }
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"
+const API_BASE = (process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000").replace(/\/$/, "")
 
-export default function WorkBehindTheMoveSection() {
+interface WorkBehindTheMoveSectionProps {
+  serviceLine?: ServiceLine
+  searchQuery?: string
+}
+
+export default function WorkBehindTheMoveSection({
+  serviceLine,
+  searchQuery = "",
+}: WorkBehindTheMoveSectionProps) {
   const [currentPage, setCurrentPage] = React.useState(1)
   const [stories, setStories] = React.useState<ShipmentStory[]>([])
   const [totalPages, setTotalPages] = React.useState(1)
@@ -35,9 +45,14 @@ export default function WorkBehindTheMoveSection() {
     async function loadStories() {
       setLoading(true)
       try {
-        const res = await fetch(
-          `${API_BASE}/api/v1/real-shipment-stories?isPublished=true&page=${currentPage}&limit=9`
-        )
+        const params = new URLSearchParams({
+          isPublished: "true",
+          page: currentPage.toString(),
+          limit: "9",
+        })
+        if (serviceLine) params.set("serviceLine", serviceLine)
+        if (searchQuery.trim()) params.set("search", searchQuery.trim())
+        const res = await fetch(`${API_BASE}/api/v1/real-shipment-stories?${params}`)
         const json = await res.json()
         if (res.ok && json.success && Array.isArray(json.data)) {
           setStories(json.data)
@@ -52,7 +67,13 @@ export default function WorkBehindTheMoveSection() {
       }
     }
     loadStories()
-  }, [currentPage])
+  }, [currentPage, searchQuery, serviceLine])
+
+  const [prevFilters, setPrevFilters] = React.useState({ searchQuery, serviceLine })
+  if (prevFilters.searchQuery !== searchQuery || prevFilters.serviceLine !== serviceLine) {
+    setPrevFilters({ searchQuery, serviceLine })
+    setCurrentPage(1)
+  }
 
   const featuredStory = stories.length > 0 ? stories[0] : null
   const gridStories = stories.length > 1 ? stories.slice(1) : []
@@ -152,7 +173,7 @@ export default function WorkBehindTheMoveSection() {
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
                 
                 <Link
-                  href={`/blog/${featuredStory.slug}`}
+                  href={`/stories/${featuredStory.slug}`}
                   className="lg:col-span-6 relative w-full h-[260px] sm:h-[340px] md:h-[380px] rounded-xl overflow-hidden block bg-slate-100"
                 >
                   {getSafeImage(featuredStory.image) ? (
@@ -179,7 +200,7 @@ export default function WorkBehindTheMoveSection() {
                       {featuredStory.shipmentType || "Real Shipment"}
                     </Badge>
                     <span className="text-xs text-slate-400 font-normal">
-                      Verified Story
+                      {featuredStory.serviceLine || "Shipment story"}
                     </span>
                   </div>
 
@@ -190,7 +211,7 @@ export default function WorkBehindTheMoveSection() {
                     <span>{featuredStory.destination}</span>
                   </div>
 
-                  <Link href={`/blog/${featuredStory.slug}`}>
+                  <Link href={`/stories/${featuredStory.slug}`}>
                     <h3 className="text-2xl sm:text-3xl font-extrabold text-[#0a192f] leading-snug tracking-tight mb-4 hover:text-[#0d2861] transition-colors">
                       {featuredStory.title}
                     </h3>
@@ -201,7 +222,7 @@ export default function WorkBehindTheMoveSection() {
                   </p>
 
                   <Link
-                    href={`/blog/${featuredStory.slug}`}
+                    href={`/stories/${featuredStory.slug}`}
                     className="inline-flex items-center gap-1.5 text-sm font-bold text-[#0d2861] hover:text-[#091b42] transition-colors"
                   >
                     Read Full Story
@@ -220,7 +241,7 @@ export default function WorkBehindTheMoveSection() {
                     key={story._id}
                     className="bg-white border border-slate-200/80 rounded-2xl overflow-hidden flex flex-col shadow-sm hover:shadow-md transition-shadow group"
                   >
-                    <Link href={`/blog/${story.slug}`} className="relative w-full aspect-[16/10] block overflow-hidden bg-slate-100">
+                    <Link href={`/stories/${story.slug}`} className="relative w-full aspect-[16/10] block overflow-hidden bg-slate-100">
                       {getSafeImage(story.image) ? (
                         <Image
                           src={getSafeImage(story.image)}
@@ -248,7 +269,7 @@ export default function WorkBehindTheMoveSection() {
                         </span>
                       </div>
 
-                      <Link href={`/blog/${story.slug}`}>
+                      <Link href={`/stories/${story.slug}`}>
                         <h4 className="text-lg font-bold text-[#0a192f] tracking-tight mb-3 line-clamp-1 hover:text-[#0d2861] transition-colors">
                           {story.title}
                         </h4>
@@ -259,7 +280,7 @@ export default function WorkBehindTheMoveSection() {
                       </p>
 
                       <Link
-                        href={`/blog/${story.slug}`}
+                        href={`/stories/${story.slug}`}
                         className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold text-[#0d2861] hover:text-[#091b42] transition-colors pt-2"
                       >
                         Read Story

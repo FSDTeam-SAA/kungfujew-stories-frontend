@@ -26,7 +26,7 @@ export function MoreRealShipments({ stories }: Props) {
           More Real Shipments
         </h2>
         <Link
-          href="/blog"
+          href="/stories"
           className="text-xs sm:text-sm font-bold text-[#0d2861] hover:text-[#091b42] hover:underline transition-colors"
         >
           View All Stories.
@@ -44,7 +44,7 @@ export function MoreRealShipments({ stories }: Props) {
             >
               {/* Image with Tag Overlay */}
               <Link
-                href={`/blog/${story.slug}`}
+                href={`/stories/${story.slug}`}
                 className="relative w-full aspect-[16/10] block overflow-hidden bg-slate-100"
               >
                 {img ? (
@@ -81,7 +81,7 @@ export function MoreRealShipments({ stories }: Props) {
                   </div>
 
                   {/* Title */}
-                  <Link href={`/blog/${story.slug}`}>
+                  <Link href={`/stories/${story.slug}`}>
                     <h3 className="text-base font-bold text-[#0a192f] tracking-tight line-clamp-2 hover:text-[#0d2861] transition-colors mb-4">
                       {story.title}
                     </h3>
@@ -90,7 +90,7 @@ export function MoreRealShipments({ stories }: Props) {
 
                 {/* Read Story Link */}
                 <Link
-                  href={`/blog/${story.slug}`}
+                  href={`/stories/${story.slug}`}
                   className="inline-flex items-center gap-1 text-xs font-bold text-[#0d2861] hover:text-[#091b42] transition-colors pt-1"
                 >
                   Read Story
@@ -104,4 +104,3 @@ export function MoreRealShipments({ stories }: Props) {
     </section>
   )
 }
-
