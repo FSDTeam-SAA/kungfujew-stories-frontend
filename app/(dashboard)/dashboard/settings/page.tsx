@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import Link from "next/link";
 import { useSession } from "next-auth/react";
 import {
   User,
@@ -543,10 +544,18 @@ export default function SettingsPage() {
           </div>
 
           {/* Card Footer */}
-          <div className="px-8 py-5 border-t border-slate-100 bg-slate-50/40 flex items-center justify-between">
-            <span className="text-[11px] text-slate-400 font-medium hidden sm:inline">
-              Requires your current password to confirm authorization.
-            </span>
+          <div className="px-8 py-5 border-t border-slate-100 bg-slate-50/40 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+            <div className="flex flex-col gap-0.5">
+              <span className="text-[11px] text-slate-400 font-medium hidden sm:inline">
+                Requires your current password to confirm authorization.
+              </span>
+              <Link
+                href="/forgot-password"
+                className="text-[11px] font-semibold text-[#0c2340] hover:underline"
+              >
+                Forgot your current password? Request a reset link
+              </Link>
+            </div>
             <button
               type="submit"
               form="passwordForm"
