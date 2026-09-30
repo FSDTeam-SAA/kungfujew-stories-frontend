@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import SessionProvider from "@/components/providers/SessionProvider";
 import { GoogleAnalytics } from "@/components/shared/GoogleAnalytics";
 import { siteConfig } from "@/lib/site";
 
@@ -58,9 +57,7 @@ export default function RootLayout({
     >
       <body className={`${inter.className} min-h-full flex flex-col font-sans bg-background text-foreground`}>
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }} />
-        <SessionProvider>
-          {children}
-        </SessionProvider>
+        {children}
         <GoogleAnalytics />
       </body>
     </html>

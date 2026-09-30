@@ -1,12 +1,3 @@
-import React from 'react'
-import LoginPage from './_components/loginauth'
-
-const page = () => {
-  return (
-    <div className='w-full'>
-      <LoginPage/>
-    </div>
-  )
-}
-
-export default page
+import { redirect } from "next/navigation";
+import { dashboardUrl } from "@/lib/dashboard";
+export default function Page() { redirect(dashboardUrl("/")); }

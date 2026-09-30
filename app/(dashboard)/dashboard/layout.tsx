@@ -1,9 +1,2 @@
-import type { Metadata } from "next"
-
-export const metadata: Metadata = {
-  robots: { index: false, follow: false },
-}
-
-export default function DashboardMetadataLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  return children
-}
+import type { ReactNode } from "react";
+export default function Layout({ children }: { children: ReactNode }) { return children; }

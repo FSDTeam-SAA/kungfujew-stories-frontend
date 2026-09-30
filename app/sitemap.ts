@@ -1,8 +1,7 @@
+import { API_BASE } from "@/lib/api/base";
 import type { MetadataRoute } from "next"
 import { resources, services } from "@/lib/content"
 import { siteConfig } from "@/lib/site"
-
-const apiBase = (process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000").replace(/\/$/, "")
 
 async function getPublishedStoryUrls() {
   try {
@@ -12,7 +11,7 @@ async function getPublishedStoryUrls() {
 
     while (page <= totalPages) {
       const response = await fetch(
-        `${apiBase}/api/v1/real-shipment-stories?isPublished=true&limit=50&page=${page}`,
+        `${API_BASE}/api/v1/real-shipment-stories?isPublished=true&limit=50&page=${page}`,
         { next: { revalidate: 3600 } }
       )
       if (!response.ok) break

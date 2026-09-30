@@ -1,7 +1,6 @@
+import { API_BASE } from "@/lib/api/base";
 import { ShipmentStory } from "@/types/shipmentStory"
 import type { ServiceLine } from "@/lib/site"
-
-const API_BASE = (process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000").replace(/\/$/, "")
 
 export async function getStoryBySlug(slug: string): Promise<ShipmentStory | null> {
   if (!slug) return null

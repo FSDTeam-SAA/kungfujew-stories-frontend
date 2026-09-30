@@ -1,5 +1,7 @@
 "use client"
 
+import { API_BASE } from "@/lib/api/base";
+
 import * as React from "react"
 import Image from "next/image"
 import Link from "next/link"
@@ -24,8 +26,6 @@ interface ShipmentStory {
   isPublished: boolean
   createdAt: string
 }
-
-const API_BASE = (process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000").replace(/\/$/, "")
 
 interface WorkBehindTheMoveSectionProps {
   serviceLine?: ServiceLine

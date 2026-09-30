@@ -1,14 +1,13 @@
+import { API_BASE } from "@/lib/api/base";
 import CallToActionSection from "@/components/home/CallToActionSection";
 import CompanyTrustSection from "@/components/home/CompanyTrustSection";
 import Footer from "@/components/home/Footer";
-import GoogleReviewsSection from "@/components/home/GoogleReviewsSection";
 import ShipmentStoriesSection from "@/components/home/ShipmentStoriesSection";
 import StatsBar from "@/components/home/StatsBar";
 import WhyStoriesMatterSection from "@/components/home/WhyStoriesMatterSection";
 import HeroSection from "@/shared/HeroSection";
 
 async function getPublishedStories() {
-  const API_BASE = (process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000").replace(/\/$/, "");
   try {
     const res = await fetch(`${API_BASE}/api/v1/real-shipment-stories?isPublished=true&limit=30`, {
       next: { revalidate: 60 },
