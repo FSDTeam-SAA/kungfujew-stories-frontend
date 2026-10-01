@@ -1,6 +1,6 @@
-import Image from "next/image"
 import Link from "next/link"
 import { ArrowRight, MapPin } from "lucide-react"
+import { HeroImageCarousel } from "@/components/home/HeroImageCarousel"
 import { QuoteLink } from "@/components/shared/QuoteLink"
 
 export default function HeroSection() {
@@ -63,16 +63,7 @@ export default function HeroSection() {
 
           {/* Right Hero Image */}
           <div className="lg:col-span-6 flex justify-center lg:justify-end">
-            <div className="relative w-full aspect-[4/3] rounded-2xl overflow-hidden shadow-sm">
-              <Image
-                src="https://images.unsplash.com/photo-1601584115197-04ecc0da31d7?auto=format&fit=crop&w=1200&q=80"
-                alt="Car carrier truck transporting vehicles on highway"
-                fill
-                priority
-                sizes="(max-width: 1024px) 100vw, 50vw"
-                className="object-cover"
-              />
-            </div>
+            <HeroImageCarousel />
           </div>
 
         </div>

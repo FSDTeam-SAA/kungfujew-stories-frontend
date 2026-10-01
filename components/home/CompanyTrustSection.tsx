@@ -68,7 +68,7 @@ export default function CompanyTrustSection() {
           <Quote className="h-10 w-10 sm:h-12 sm:w-12 text-[#d67d3e]/30 mb-4" />
           
           <blockquote className="relative z-10 text-lg sm:text-xl md:text-2xl font-bold text-[#0a192f] leading-snug tracking-tight mb-6">
-            &ldquo;Our clients hire us for touchdowns, not just getting the ball up the field. Successful outcome for your shipments are the only outcome we are interested in.&rdquo;
+            &ldquo;Our clients hire us to score touchdowns. That means seeing every shipment through to a successful delivery with clear communication and accountability every step of the way.&rdquo;
           </blockquote>
 
           <div className="flex items-center gap-4 pt-4 border-t border-slate-200/70">

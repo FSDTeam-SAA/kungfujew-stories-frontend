@@ -2,6 +2,8 @@ import { Phone, ArrowRight, Zap, Clock } from "lucide-react"
 import { QuoteLink } from "@/components/shared/QuoteLink"
 import type { ServiceLine } from "@/lib/site"
 
+const quoteServices = ["Vehicles", "Freight", "Heavy Equipment"]
+
 interface CallToActionSectionProps {
   serviceLine?: ServiceLine
   storySlug?: string
@@ -39,57 +41,53 @@ export default function CallToActionSection({
             ONE QUICK CALL DOES IT ALL!
           </h2>
 
-          {/* Client Requested Subtitle: CALL 888-702-7322 OR REQUEST AN INSTANT QUOTE ONLINE */}
-          <p className="text-base sm:text-lg md:text-xl font-bold text-center text-blue-100/90 tracking-wide uppercase mb-8 sm:mb-10 max-w-3xl mx-auto">
-            Call 888-702-7322 or Request an Instant Quote Online
-          </p>
-
-          {/* Full-Width Action Container: Left-to-Right Phone + Quote Button */}
-          <div className="grid grid-cols-1 lg:grid-cols-11 items-center gap-5 lg:gap-8 w-full max-w-5xl mx-auto">
-            
-            {/* Left Action: Direct Call Button (5 cols) */}
-            <div className="lg:col-span-5 flex flex-col items-center lg:items-end w-full">
+          <div className="grid w-full max-w-5xl grid-cols-1 gap-4 mx-auto md:grid-cols-3">
+            <div className="w-full">
               <a
                 href="tel:8887027322"
                 aria-label="Call Car Carrier Group directly at 888-702-7322"
-                className="group w-full flex items-center justify-center sm:justify-start gap-4 rounded-2xl bg-white/[0.08] hover:bg-white/[0.14] border border-white/20 hover:border-white/40 p-4 sm:p-5 transition-all duration-200 shadow-lg hover:shadow-xl text-left"
+                className="group flex min-h-36 w-full flex-col items-center justify-center rounded-2xl border border-white/20 bg-white/[0.08] p-5 text-center shadow-lg transition-colors duration-200 hover:border-white/40 hover:bg-white/[0.14] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
               >
-                <div className="h-12 w-12 sm:h-14 sm:w-14 rounded-xl bg-[#d67d3e] text-white flex items-center justify-center shrink-0 shadow-md group-hover:scale-105 transition-transform duration-200">
-                  <Phone className="h-6 w-6 fill-white stroke-none" />
+                <div className="mb-3 flex h-11 w-11 items-center justify-center rounded-xl bg-[#d67d3e] text-white shadow-md transition-transform duration-200 group-hover:scale-105">
+                  <Phone className="h-5 w-5 fill-white stroke-none" aria-hidden="true" />
                 </div>
-                <div className="flex flex-col">
-                  <span className="text-[11px] sm:text-xs font-bold uppercase tracking-wider text-slate-300">
-                    Call 888-702-7322
-                  </span>
-                  <span className="text-xl sm:text-2xl lg:text-[26px] font-black text-white tracking-tight group-hover:text-amber-300 transition-colors">
-                    888-702-7322
-                  </span>
-                </div>
+                <span className="text-xs font-bold uppercase tracking-wider text-slate-300">Call us</span>
+                <span className="mt-1 text-xl font-black tracking-tight text-white transition-colors group-hover:text-amber-300 sm:text-2xl">
+                  888-702-7322
+                </span>
               </a>
             </div>
 
-            {/* Middle Divider: OR (1 col) */}
-            <div className="lg:col-span-1 flex items-center justify-center w-full my-1 lg:my-0">
-              <span className="text-xs sm:text-sm font-extrabold uppercase tracking-wider text-slate-300 bg-white/[0.08] rounded-full px-3.5 py-1 border border-white/10">
-                OR
-              </span>
-            </div>
-
-            {/* Right Action: Instant Online Quote Button (5 cols) */}
-            <div className="lg:col-span-5 flex flex-col items-center lg:items-start w-full">
+            <div className="w-full">
               <QuoteLink
                 placement="fullwidth-cta"
                 serviceLine={serviceLine}
                 storySlug={storySlug}
-                className="group w-full inline-flex items-center justify-center gap-3 rounded-2xl bg-white hover:bg-slate-100 p-4 sm:p-5 text-center shadow-xl hover:shadow-2xl hover:scale-[1.01] transition-all duration-200 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+                className="group flex min-h-36 w-full flex-col items-center justify-center rounded-2xl bg-white p-5 text-center shadow-xl transition-colors duration-200 hover:bg-slate-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
               >
-                <span className="text-base sm:text-lg lg:text-xl font-black text-[#0d2861] uppercase tracking-wide">
-                  GET AN INSTANT ONLINE QUOTE
+                <span className="flex items-center gap-2 text-lg font-black uppercase tracking-wide text-[#0d2861] sm:text-xl">
+                  Get an Instant Quote
+                  <ArrowRight className="h-5 w-5 shrink-0 transition-transform duration-200 group-hover:translate-x-1" aria-hidden="true" />
                 </span>
-                <ArrowRight className="h-5 w-5 sm:h-6 sm:w-6 text-[#0d2861] shrink-0 transition-transform duration-200 group-hover:translate-x-1" />
+                <span className="mt-3 flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-xs font-bold uppercase tracking-wide text-slate-500">
+                  {quoteServices.map((service, index) => (
+                    <span key={service}>
+                      {index > 0 && <span aria-hidden="true" className="mr-2 text-slate-300">•</span>}
+                      {service}
+                    </span>
+                  ))}
+                </span>
               </QuoteLink>
             </div>
 
+            <div className="flex min-h-36 w-full flex-col items-center justify-center rounded-2xl border border-[#d67d3e]/50 bg-[#d67d3e]/15 p-5 text-center">
+              <span className="rounded-full border border-[#f59e0b]/40 bg-[#d67d3e]/20 px-3 py-1 text-xs font-extrabold uppercase tracking-wider text-amber-200">
+                Coming soon
+              </span>
+              <p className="mt-3 text-lg font-black leading-tight tracking-tight text-white sm:text-xl">
+                New Auto Shipping Quote Tool
+              </p>
+            </div>
           </div>
 
           {/* Bottom Reassurance Bar */}
