@@ -1,6 +1,5 @@
 import type { Metadata } from "next"
 import Link from "next/link"
-import Navbar from "@/shared/navbar"
 import Footer from "@/components/home/Footer"
 import {
   Compass,
@@ -25,7 +24,6 @@ export default function NotFound() {
   return (
     <div className="min-h-screen flex flex-col bg-white text-foreground">
       {/* Site Header */}
-      <Navbar />
 
       {/* Main 404 Hero Area */}
       <main className="flex-1 flex flex-col justify-center relative overflow-hidden bg-gradient-to-b from-[#f8fafc] via-white to-[#f8fafc] py-16 sm:py-24">
