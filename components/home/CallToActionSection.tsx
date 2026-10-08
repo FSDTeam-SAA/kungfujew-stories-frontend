@@ -30,14 +30,14 @@ export default function CallToActionSection({
           
           {/* Top Eyebrow */}
           <div className="flex items-center justify-center gap-2 mb-3">
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-[#d67d3e]/20 border border-[#d67d3e]/30 px-3.5 py-1 text-xs sm:text-[13px] font-extrabold uppercase tracking-widest text-[#f59e0b]">
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-[#d67d3e]/20 border border-[#d67d3e]/30 px-3.5 py-1 text-xs sm:text-[13px] font-bold uppercase tracking-widest text-[#f59e0b]">
               <Zap className="h-3.5 w-3.5 fill-current" />
               Direct Carrier Dispatch
             </span>
           </div>
 
           {/* Main Headline */}
-          <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-center text-white tracking-tight uppercase leading-[1.08] mb-3 max-w-4xl mx-auto">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-center text-white tracking-tight uppercase leading-[1.08] mb-3 max-w-4xl mx-auto">
             ONE QUICK CALL DOES IT ALL!
           </h2>
 
@@ -52,7 +52,7 @@ export default function CallToActionSection({
                   <Phone className="h-5 w-5 fill-white stroke-none" aria-hidden="true" />
                 </div>
                 <span className="text-xs font-bold uppercase tracking-wider text-slate-300">Call us</span>
-                <span className="mt-1 text-xl font-black tracking-tight text-white transition-colors group-hover:text-amber-300 sm:text-2xl">
+                <span className="mt-1 text-xl font-bold tracking-tight text-white transition-colors group-hover:text-amber-300 sm:text-2xl">
                   888-702-7322
                 </span>
               </a>
@@ -65,7 +65,7 @@ export default function CallToActionSection({
                 storySlug={storySlug}
                 className="group flex min-h-36 w-full flex-col items-center justify-center rounded-2xl bg-white p-5 text-center shadow-xl transition-colors duration-200 hover:bg-slate-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
               >
-                <span className="flex items-center gap-2 text-lg font-black uppercase tracking-wide text-[#0d2861] sm:text-xl">
+                <span className="flex items-center gap-2 text-lg font-bold uppercase tracking-wide text-[#0d2861] sm:text-xl">
                   Get an Instant Quote
                   <ArrowRight className="h-5 w-5 shrink-0 transition-transform duration-200 group-hover:translate-x-1" aria-hidden="true" />
                 </span>
@@ -81,10 +81,10 @@ export default function CallToActionSection({
             </div>
 
             <div className="flex min-h-36 w-full flex-col items-center justify-center rounded-2xl border border-[#d67d3e]/50 bg-[#d67d3e]/15 p-5 text-center">
-              <span className="rounded-full border border-[#f59e0b]/40 bg-[#d67d3e]/20 px-3 py-1 text-xs font-extrabold uppercase tracking-wider text-amber-200">
+              <span className="rounded-full border border-[#f59e0b]/40 bg-[#d67d3e]/20 px-3 py-1 text-xs font-bold uppercase tracking-wider text-amber-200">
                 Coming soon
               </span>
-              <p className="mt-3 text-lg font-black leading-tight tracking-tight text-white sm:text-xl">
+              <p className="font-heading mt-3 text-lg font-bold leading-tight tracking-tight text-white sm:text-xl">
                 New Auto Shipping Quote Tool
               </p>
             </div>

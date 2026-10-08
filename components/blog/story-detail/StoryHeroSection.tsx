@@ -32,12 +32,12 @@ export function StoryHeroSection({ story }: Props) {
         
         {/* Left Headline & Meta */}
         <div className="lg:col-span-7 flex flex-col justify-center">
-          <h1 className="text-3xl sm:text-4xl lg:text-[46px] font-black text-[#0a192f] tracking-tight leading-[1.15] mb-5">
+          <h1 className="text-3xl sm:text-4xl lg:text-[46px] font-bold text-[#0a192f] tracking-tight leading-[1.15] mb-5">
             {story.title}
           </h1>
 
           {story.metaDescription && (
-            <p className="text-sm sm:text-base text-slate-600 font-normal leading-relaxed mb-8 max-w-xl">
+            <p className="text-base sm:text-lg text-slate-600 font-normal leading-relaxed mb-8 max-w-xl">
               {story.metaDescription}
             </p>
           )}
@@ -88,4 +88,3 @@ export function StoryHeroSection({ story }: Props) {
     </div>
   )
 }
-

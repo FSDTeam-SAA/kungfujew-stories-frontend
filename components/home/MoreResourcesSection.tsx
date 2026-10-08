@@ -34,7 +34,7 @@ export default function MoreResourcesSection() {
             <span className="text-xs sm:text-[13px] font-bold tracking-widest text-[#0d2861] uppercase block mb-3">
               Keep Exploring
             </span>
-            <h2 className="text-3xl sm:text-4xl lg:text-[42px] font-extrabold text-[#0a192f] tracking-tight leading-tight">
+            <h2 className="text-3xl sm:text-4xl lg:text-[42px] font-bold text-[#0a192f] tracking-tight leading-tight">
               More Transportation Resources
             </h2>
           </div>

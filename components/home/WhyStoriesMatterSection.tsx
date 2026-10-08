@@ -32,7 +32,7 @@ export default function WhyStoriesMatterSection() {
           <span className="text-xs sm:text-[13px] font-bold tracking-widest text-[#0d2861] uppercase block mb-3">
             Why These Stories Matter
           </span>
-          <h2 className="text-3xl sm:text-4xl lg:text-[42px] font-extrabold text-[#0a192f] tracking-tight leading-[1.15] mb-3">
+          <h2 className="text-3xl sm:text-4xl lg:text-[42px] font-bold text-[#0a192f] tracking-tight leading-[1.15] mb-3">
             See How Real Transportation Gets Done
           </h2>
           <p className="text-sm sm:text-base text-slate-500 font-normal leading-relaxed">

@@ -4,14 +4,14 @@ export function StoryTrustBar() {
       <div className="bg-[#f8fafc] border border-slate-200/80 rounded-2xl p-7 sm:p-10 text-center">
         
         {/* Title */}
-        <h3 className="text-xl sm:text-2xl font-black text-[#0a192f] tracking-tight mb-8">
+        <h3 className="text-xl sm:text-2xl font-bold text-[#0a192f] tracking-tight mb-8">
           A clearer way to prepare for transportation
         </h3>
 
         {/* 4 Items */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8">
           <div>
-            <span className="text-base sm:text-lg font-black text-[#0a192f] block mb-1">
+            <span className="font-heading text-base sm:text-lg font-bold text-[#0a192f] block mb-1">
               Quote details
             </span>
             <span className="text-xs text-slate-500 font-medium block">
@@ -20,7 +20,7 @@ export function StoryTrustBar() {
           </div>
 
           <div>
-            <span className="text-base sm:text-lg font-black text-[#0a192f] block mb-1">
+            <span className="font-heading text-base sm:text-lg font-bold text-[#0a192f] block mb-1">
               Pickup planning
             </span>
             <span className="text-xs text-slate-500 font-medium block">
@@ -29,7 +29,7 @@ export function StoryTrustBar() {
           </div>
 
           <div>
-            <span className="text-base sm:text-lg font-black text-[#0a192f] block mb-1">
+            <span className="font-heading text-base sm:text-lg font-bold text-[#0a192f] block mb-1">
               Documentation
             </span>
             <span className="text-xs text-slate-500 font-medium block">
@@ -38,7 +38,7 @@ export function StoryTrustBar() {
           </div>
 
           <div>
-            <span className="text-base sm:text-lg font-black text-[#0a192f] block mb-1">
+            <span className="font-heading text-base sm:text-lg font-bold text-[#0a192f] block mb-1">
               Delivery review
             </span>
             <span className="text-xs text-slate-500 font-medium block">

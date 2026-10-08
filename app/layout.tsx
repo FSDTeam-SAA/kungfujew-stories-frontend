@@ -1,12 +1,21 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Montserrat, Open_Sans } from "next/font/google";
 import "./globals.css";
 import { GoogleAnalytics } from "@/components/shared/GoogleAnalytics";
 import { siteConfig } from "@/lib/site";
+import Navbar from "@/shared/navbar";
 
-const inter = Inter({
+const montserrat = Montserrat({
   subsets: ["latin"],
-  variable: "--font-inter",
+  weight: "variable",
+  variable: "--font-montserrat",
+  display: "swap",
+});
+
+const openSans = Open_Sans({
+  subsets: ["latin"],
+  weight: "variable",
+  variable: "--font-open-sans",
   display: "swap",
 });
 
@@ -53,12 +62,13 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${inter.variable} font-sans h-full antialiased`}
+      className={`${montserrat.variable} ${openSans.variable} font-sans h-full antialiased`}
     >
-      <body className={`${inter.className} min-h-full flex flex-col font-sans bg-background text-foreground`}>
+      <body className="min-h-full flex flex-col font-sans bg-background text-foreground">
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }} />
         {children}
         <GoogleAnalytics />
+        <Navbar/>
       </body>
     </html>
   );

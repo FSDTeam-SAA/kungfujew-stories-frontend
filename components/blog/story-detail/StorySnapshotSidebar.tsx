@@ -25,7 +25,7 @@ export function StorySnapshotSidebar({ story }: Props) {
       <div className="bg-[#f8fafc] border border-slate-200/90 rounded-2xl p-6 sm:p-7 shadow-[0_2px_12px_rgba(0,0,0,0.02)]">
         
         {/* Card Header */}
-        <h4 className="text-xs font-black tracking-widest text-[#0a192f] uppercase mb-6">
+        <h4 className="text-xs font-bold tracking-widest text-[#0a192f] uppercase mb-6">
           SHIPMENT SNAPSHOT
         </h4>
 

@@ -8,7 +8,7 @@ interface Props {
 export function StoryRouteBanner({ story }: Props) {
   return (
     <div className="my-8">
-      <h3 className="text-xl sm:text-2xl font-black text-[#0a192f] tracking-tight mb-4">
+      <h3 className="text-xl sm:text-2xl font-bold text-[#0a192f] tracking-tight mb-4">
         The Route
       </h3>
 

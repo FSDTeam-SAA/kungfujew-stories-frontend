@@ -40,10 +40,15 @@ export default function WorkBehindTheMoveSection({
   const [stories, setStories] = React.useState<ShipmentStory[]>([])
   const [totalPages, setTotalPages] = React.useState(1)
   const [loading, setLoading] = React.useState(true)
+  const [loadError, setLoadError] = React.useState(false)
+  const [retryCount, setRetryCount] = React.useState(0)
 
   React.useEffect(() => {
+    const controller = new AbortController()
+
     async function loadStories() {
       setLoading(true)
+      setLoadError(false)
       try {
         const params = new URLSearchParams({
           isPublished: "true",
@@ -52,22 +57,28 @@ export default function WorkBehindTheMoveSection({
         })
         if (serviceLine) params.set("serviceLine", serviceLine)
         if (searchQuery.trim()) params.set("search", searchQuery.trim())
-        const res = await fetch(`${API_BASE}/api/v1/real-shipment-stories?${params}`)
+        const res = await fetch(`${API_BASE}/api/v1/real-shipment-stories?${params}`, {
+          signal: controller.signal,
+        })
         const json = await res.json()
-        if (res.ok && json.success && Array.isArray(json.data)) {
-          setStories(json.data)
-          if (json.pagination?.totalPages) {
-            setTotalPages(json.pagination.totalPages)
-          }
+        if (!res.ok || !json.success || !Array.isArray(json.data)) {
+          throw new Error("Unable to load shipment stories")
         }
+        if (controller.signal.aborted) return
+        setStories(json.data)
+        setTotalPages(json.pagination?.totalPages || 1)
       } catch (err) {
+        if (controller.signal.aborted) return
         console.error("Error loading shipment stories:", err)
+        setStories([])
+        setLoadError(true)
       } finally {
-        setLoading(false)
+        if (!controller.signal.aborted) setLoading(false)
       }
     }
-    loadStories()
-  }, [currentPage, searchQuery, serviceLine])
+    void loadStories()
+    return () => controller.abort()
+  }, [currentPage, searchQuery, serviceLine, retryCount])
 
   const [prevFilters, setPrevFilters] = React.useState({ searchQuery, serviceLine })
   if (prevFilters.searchQuery !== searchQuery || prevFilters.serviceLine !== serviceLine) {
@@ -92,7 +103,7 @@ export default function WorkBehindTheMoveSection({
         
         {/* Header Section */}
         <div className="mb-10">
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-[#0a192f] tracking-tight mb-2">
+          <h2 className="text-3xl sm:text-4xl font-bold text-[#0a192f] tracking-tight mb-2">
             The work behind the move
           </h2>
           <p className="text-xs sm:text-sm text-slate-500 font-normal">
@@ -150,8 +161,23 @@ export default function WorkBehindTheMoveSection({
           </div>
         )}
 
+        {!loading && loadError && (
+          <div className="bg-slate-50 border border-slate-200 rounded-2xl p-12 text-center my-8">
+            <p role="alert" className="text-base font-bold text-[#0a192f] mb-2">
+              Could not load shipment stories
+            </p>
+            <button
+              type="button"
+              onClick={() => setRetryCount((count) => count + 1)}
+              className="text-sm font-bold text-[#0d2861] underline focus-visible:outline-2 focus-visible:outline-offset-2"
+            >
+              Try again
+            </button>
+          </div>
+        )}
+
         {/* Empty State */}
-        {!loading && stories.length === 0 && (
+        {!loading && !loadError && stories.length === 0 && (
           <div className="bg-slate-50 border border-slate-200 rounded-2xl p-12 text-center my-8">
             <div className="w-12 h-12 rounded-full bg-slate-200/70 flex items-center justify-center mx-auto mb-4 text-slate-500">
               <Truck className="w-6 h-6" />
@@ -212,7 +238,7 @@ export default function WorkBehindTheMoveSection({
                   </div>
 
                   <Link href={`/stories/${featuredStory.slug}`}>
-                    <h3 className="text-2xl sm:text-3xl font-extrabold text-[#0a192f] leading-snug tracking-tight mb-4 hover:text-[#0d2861] transition-colors">
+                    <h3 className="text-2xl sm:text-3xl font-bold text-[#0a192f] leading-snug tracking-tight mb-4 hover:text-[#0d2861] transition-colors">
                       {featuredStory.title}
                     </h3>
                   </Link>

@@ -17,7 +17,7 @@ export default function HeroSection() {
             </span>
 
             {/* Main Heading */}
-            <h1 className="text-4xl sm:text-5xl lg:text-[56px] font-extrabold text-[#0a192f] tracking-tight leading-[1.15] mb-6">
+            <h1 className="text-4xl sm:text-5xl lg:text-[56px] font-bold text-[#0a192f] tracking-tight leading-[1.15] mb-6">
               Real Transportation.
             </h1>
 

@@ -53,7 +53,7 @@ export default function StatsBar() {
 
                 {/* Text Content */}
                 <div className="flex flex-col">
-                  <span className="text-[17px] font-bold text-[#0a192f] leading-tight tracking-tight">
+                  <span className="font-heading text-[17px] font-bold text-[#0a192f] leading-tight tracking-tight">
                     {item.title}
                   </span>
                   <span className="text-[13px] text-slate-500 font-normal leading-normal mt-0.5">

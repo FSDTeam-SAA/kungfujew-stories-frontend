@@ -11,7 +11,7 @@ export default function ServicesPage() {
             <span className="text-[11px] sm:text-xs font-bold tracking-[0.22em] text-[#0d2861] uppercase mb-4 sm:mb-6 block">
               Our Services
             </span>
-            <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight leading-[1.12] mb-6">
+            <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight leading-[1.12] mb-6">
               <span className="text-[#0a192f]">How </span>
               <span className="text-[#0d2861]">we</span>
               <span className="text-[#0a192f]"> can </span>
@@ -19,7 +19,7 @@ export default function ServicesPage() {
               <span className="text-[#0d2861]">help</span>
               <span className="text-[#0a192f]"> you.</span>
             </h1>
-            <p className="text-sm sm:text-base md:text-[17px] text-slate-500 font-normal leading-relaxed max-w-2xl">
+            <p className="text-base md:text-[17px] text-slate-500 font-normal leading-relaxed max-w-2xl">
               Explore the information to gather before requesting vehicle, freight, or heavy-equipment transportation.
             </p>
           </div>

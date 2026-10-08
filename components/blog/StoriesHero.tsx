@@ -11,7 +11,7 @@ export default function StoriesHero() {
           </span>
 
           {/* Main Two-Tone Heading */}
-          <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight leading-[1.12] mb-6">
+          <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight leading-[1.12] mb-6">
             <span className="text-[#0a192f]">Real </span>
             <span className="text-[#0d2861]">Shipments.</span>
             <span className="text-[#0a192f]"> Real </span>
@@ -21,7 +21,7 @@ export default function StoriesHero() {
           </h1>
 
           {/* Subtext */}
-          <p className="text-sm sm:text-base md:text-[17px] text-slate-500 font-normal leading-relaxed max-w-2xl">
+          <p className="text-base md:text-[17px] text-slate-500 font-normal leading-relaxed max-w-2xl">
             Explore real shipments handled by Car Carrier Group, from vehicle transportation
             and freight to equipment and specialty moves.
           </p>

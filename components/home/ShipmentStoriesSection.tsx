@@ -207,7 +207,7 @@ export default function ShipmentStoriesSection({
             <span className="text-xs sm:text-[13px] font-bold tracking-widest text-[#0d2861] uppercase block mb-3">
               Browse Shipment Stories
             </span>
-            <h2 className="text-3xl sm:text-4xl lg:text-[44px] font-extrabold text-[#0a192f] tracking-tight leading-[1.15]">
+            <h2 className="text-3xl sm:text-4xl lg:text-[44px] font-bold text-[#0a192f] tracking-tight leading-[1.15]">
               The work behind the move
             </h2>
           </div>
@@ -378,7 +378,7 @@ export default function ShipmentStoriesSection({
 
                   {/* Title */}
                   <Link href={`/stories/${featuredStory.slug}`}>
-                    <h3 className="text-2xl sm:text-3xl font-extrabold text-[#0a192f] leading-snug tracking-tight mb-4 hover:text-[#0d2861] transition-colors">
+                    <h3 className="text-2xl sm:text-3xl font-bold text-[#0a192f] leading-snug tracking-tight mb-4 hover:text-[#0d2861] transition-colors">
                       {featuredStory.title}
                     </h3>
                   </Link>

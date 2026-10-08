@@ -1,4 +1,5 @@
 import { ShipmentStory } from "@/types/shipmentStory"
+import { sanitizeStoryContent } from "@/lib/sanitize-story-content"
 
 interface Props {
   story: ShipmentStory
@@ -10,8 +11,7 @@ export function StoryContent({ story }: Props) {
   return (
     <article
       className="story-rendered-content ProseMirror bg-white border border-slate-200/70 rounded-3xl p-6 sm:p-10 shadow-sm leading-relaxed"
-      dangerouslySetInnerHTML={{ __html: story.content }}
+      dangerouslySetInnerHTML={{ __html: sanitizeStoryContent(story.content) }}
     />
   )
 }
-

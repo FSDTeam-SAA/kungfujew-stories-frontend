@@ -20,7 +20,7 @@ export function StoryFaqs({ faqs }: Props) {
           <HelpCircle className="w-5 h-5" />
         </div>
         <div>
-          <h3 className="text-xl sm:text-2xl font-extrabold text-[#0a192f] tracking-tight">
+          <h3 className="text-xl sm:text-2xl font-bold text-[#0a192f] tracking-tight">
             Shipment FAQs
           </h3>
           <p className="text-xs sm:text-sm text-slate-500">

@@ -42,7 +42,7 @@ export default function NotFound() {
 
           {/* Large Stylized 404 Graphic */}
           <div className="relative inline-flex items-center justify-center mb-6">
-            <span className="text-8xl sm:text-[140px] font-black tracking-tighter text-slate-100 select-none leading-none">
+            <span className="font-heading text-8xl sm:text-[140px] font-bold tracking-tighter text-slate-100 select-none leading-none">
               404
             </span>
             <div className="absolute inset-0 flex items-center justify-center">
@@ -53,7 +53,7 @@ export default function NotFound() {
           </div>
 
           {/* Headline & Description */}
-          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-[#0a192f] tracking-tight leading-tight mb-4 max-w-2xl mx-auto">
+          <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-[#0a192f] tracking-tight leading-tight mb-4 max-w-2xl mx-auto">
             We couldn&apos;t find this shipment route
           </h1>
           <p className="text-sm sm:text-base lg:text-lg text-slate-600 font-normal leading-relaxed max-w-xl mx-auto mb-9">
@@ -161,4 +161,3 @@ export default function NotFound() {
     </div>
   )
 }
-

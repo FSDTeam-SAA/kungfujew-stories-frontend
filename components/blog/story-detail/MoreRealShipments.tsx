@@ -22,7 +22,7 @@ export function MoreRealShipments({ stories }: Props) {
     <section className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-6xl my-14 sm:my-20">
       {/* Section Header */}
       <div className="flex items-center justify-between gap-4 mb-8">
-        <h2 className="text-2xl sm:text-3xl font-black text-[#0a192f] tracking-tight">
+        <h2 className="text-2xl sm:text-3xl font-bold text-[#0a192f] tracking-tight">
           More Real Shipments
         </h2>
         <Link
@@ -63,7 +63,7 @@ export function MoreRealShipments({ stories }: Props) {
 
                 {/* Category Pill Tag Overlay */}
                 <div className="absolute top-3 left-3 z-10">
-                  <span className="bg-white/95 backdrop-blur-xs text-[#0a192f] text-[10px] font-black tracking-wider uppercase px-2.5 py-1 rounded-md shadow-xs border border-slate-200/60">
+                  <span className="bg-white/95 backdrop-blur-xs text-[#0a192f] text-[10px] font-bold tracking-wider uppercase px-2.5 py-1 rounded-md shadow-xs border border-slate-200/60">
                     {story.shipmentType || "AUTO SHIPPING"}
                   </span>
                 </div>

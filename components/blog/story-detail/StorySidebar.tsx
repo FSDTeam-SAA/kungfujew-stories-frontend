@@ -58,7 +58,7 @@ export function StorySidebar({ story }: Props) {
           <span className="text-[11px] font-bold tracking-widest text-slate-300 uppercase block mb-2">
             Need Similar Transport?
           </span>
-          <h4 className="text-xl font-extrabold text-white tracking-tight leading-snug mb-3">
+          <h4 className="text-xl font-bold text-white tracking-tight leading-snug mb-3">
             Request a transportation quote
           </h4>
           <p className="text-xs sm:text-sm text-slate-300 leading-relaxed mb-6">

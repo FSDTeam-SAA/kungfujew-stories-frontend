@@ -20,7 +20,7 @@ export default function StoryNotFound() {
           <Truck className="w-8 h-8" />
         </div>
 
-        <h1 className="text-2xl sm:text-3xl font-extrabold text-[#0a192f] tracking-tight mb-3">
+        <h1 className="text-2xl sm:text-3xl font-bold text-[#0a192f] tracking-tight mb-3">
           Shipment Story Not Found
         </h1>
         <p className="text-sm sm:text-base text-slate-500 mb-8 leading-relaxed">

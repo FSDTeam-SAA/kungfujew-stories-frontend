@@ -25,10 +25,10 @@ export default function CompanyTrustSection() {
         
         {/* Header Block */}
         <div className="text-center max-w-3xl mx-auto mb-12 sm:mb-16">
-          <span className="inline-flex items-center gap-2 text-xs sm:text-[13px] font-extrabold uppercase tracking-widest text-[#0d2861] bg-blue-50/80 border border-blue-200/60 px-4 py-1.5 rounded-full mb-4">
+          <span className="inline-flex items-center gap-2 text-xs sm:text-[13px] font-bold uppercase tracking-widest text-[#0d2861] bg-blue-50/80 border border-blue-200/60 px-4 py-1.5 rounded-full mb-4">
             Car Carrier Group
           </span>
-          <h2 className="text-3xl sm:text-4xl md:text-5xl font-black text-[#0a192f] tracking-tight mb-4">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold text-[#0a192f] tracking-tight mb-4">
             21 Years in Business
           </h2>
           <p className="text-lg sm:text-xl font-bold text-[#0d2861] italic tracking-tight">
@@ -72,11 +72,11 @@ export default function CompanyTrustSection() {
           </blockquote>
 
           <div className="flex items-center gap-4 pt-4 border-t border-slate-200/70">
-            <div className="h-12 w-12 rounded-full bg-[#0d2861] text-white flex items-center justify-center font-black text-sm tracking-wider shadow-sm shrink-0">
+            <div className="h-12 w-12 rounded-full bg-[#0d2861] text-white flex items-center justify-center font-bold text-sm tracking-wider shadow-sm shrink-0">
               ML
             </div>
             <div>
-              <div className="text-base sm:text-lg font-black text-[#0a192f] tracking-tight">
+              <div className="text-base sm:text-lg font-bold text-[#0a192f] tracking-tight">
                 Mitchell Levin
               </div>
               <div className="text-xs sm:text-sm font-bold uppercase tracking-wider text-[#d67d3e]">

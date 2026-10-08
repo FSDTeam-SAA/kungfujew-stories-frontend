@@ -91,7 +91,7 @@ export function StoryHeader({ story }: Props) {
       </div>
 
       {/* Main Headline */}
-      <h1 className="text-3xl sm:text-4xl lg:text-[44px] font-extrabold text-[#0a192f] tracking-tight leading-[1.2]">
+      <h1 className="text-3xl sm:text-4xl lg:text-[44px] font-bold text-[#0a192f] tracking-tight leading-[1.2]">
         {story.title}
       </h1>
 

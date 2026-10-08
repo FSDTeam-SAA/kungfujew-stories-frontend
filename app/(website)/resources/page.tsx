@@ -11,12 +11,12 @@ export default function ResourcesPage() {
             <span className="text-[11px] sm:text-xs font-bold tracking-[0.22em] text-[#0d2861] uppercase mb-4 sm:mb-6 block">
               Resources
             </span>
-            <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight leading-[1.12] mb-6">
+            <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight leading-[1.12] mb-6">
               <span className="text-[#0a192f]">Everything </span>
               <span className="text-[#0d2861]">you</span>
               <span className="text-[#0a192f]"> need.</span>
             </h1>
-            <p className="text-sm sm:text-base md:text-[17px] text-slate-500 font-normal leading-relaxed max-w-2xl">
+            <p className="text-base md:text-[17px] text-slate-500 font-normal leading-relaxed max-w-2xl">
               Practical guides for understanding the quote, pickup, transit, inspection, and delivery process.
             </p>
           </div>

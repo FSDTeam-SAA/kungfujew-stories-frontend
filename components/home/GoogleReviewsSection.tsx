@@ -131,7 +131,7 @@ export default function GoogleReviewsSection() {
               </span>
             </div>
 
-            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-black text-[#0a192f] tracking-tight">
+            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-[#0a192f] tracking-tight">
               Real Customer Reviews on Google
             </h2>
           </div>

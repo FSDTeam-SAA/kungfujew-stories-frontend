@@ -46,7 +46,7 @@ export default async function ResourcePage({ params }: Props) {
       {faqSchema && <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />}
       <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
         <p className="mb-4 text-xs font-bold uppercase tracking-[0.22em] text-[#0d2861]">Transportation resource</p>
-        <h1 className="text-4xl font-extrabold tracking-tight text-[#0a192f] sm:text-5xl">{resource.title}</h1>
+        <h1 className="text-4xl font-bold tracking-tight leading-[1.15] text-[#0a192f] sm:text-5xl">{resource.title}</h1>
         <p className="mt-6 text-lg leading-relaxed text-slate-600">{resource.intro}</p>
         <div className="mt-12 space-y-8">
           {resource.sections.map(([heading, body]) => (
