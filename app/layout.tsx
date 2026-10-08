@@ -3,7 +3,6 @@ import { Montserrat, Open_Sans } from "next/font/google";
 import "./globals.css";
 import { GoogleAnalytics } from "@/components/shared/GoogleAnalytics";
 import { siteConfig } from "@/lib/site";
-import Navbar from "@/shared/navbar";
 
 const montserrat = Montserrat({
   subsets: ["latin"],
@@ -68,7 +67,6 @@ export default function RootLayout({
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }} />
         {children}
         <GoogleAnalytics />
-        <Navbar/>
       </body>
     </html>
   );
