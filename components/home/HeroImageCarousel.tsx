@@ -35,7 +35,19 @@ const AUTO_ADVANCE_MS = 5_000
 
 export function HeroImageCarousel() {
   const [activeSlide, setActiveSlide] = useState(0)
-  const [isPaused, setIsPaused] = useState(false)
+  const [hovered, setHovered] = useState(false)
+  const [focused, setFocused] = useState(false)
+  const [pauseRequested, setPauseRequested] = useState(false)
+  const [reducedMotion, setReducedMotion] = useState(true)
+  const isPaused = hovered || focused || pauseRequested || reducedMotion
+
+  useEffect(() => {
+    const media = window.matchMedia("(prefers-reduced-motion: reduce)")
+    const update = () => setReducedMotion(media.matches)
+    update()
+    media.addEventListener("change", update)
+    return () => media.removeEventListener("change", update)
+  }, [])
 
   useEffect(() => {
     if (isPaused) {
@@ -57,12 +69,12 @@ export function HeroImageCarousel() {
       role="region"
       onBlurCapture={(event) => {
         if (!event.currentTarget.contains(event.relatedTarget)) {
-          setIsPaused(false)
+          setFocused(false)
         }
       }}
-      onFocusCapture={() => setIsPaused(true)}
-      onMouseEnter={() => setIsPaused(true)}
-      onMouseLeave={() => setIsPaused(false)}
+      onFocusCapture={() => setFocused(true)}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
     >
       {slides.map((slide, index) => {
         const isActive = index === activeSlide
@@ -71,7 +83,7 @@ export function HeroImageCarousel() {
           <div
             key={slide.src}
             aria-hidden={!isActive}
-            className={`absolute inset-0 transition-opacity duration-700 ease-out ${
+            className={`absolute inset-0 transition-opacity duration-700 ease-out motion-reduce:transition-none ${
               isActive ? "opacity-100" : "pointer-events-none opacity-0"
             }`}
           >
@@ -80,6 +92,7 @@ export function HeroImageCarousel() {
               alt={isActive ? slide.alt : ""}
               fill
               priority={index === 0}
+              loading={index === 0 ? "eager" : "lazy"}
               sizes="(max-width: 1024px) 100vw, 50vw"
               className="object-cover"
             />
@@ -87,7 +100,8 @@ export function HeroImageCarousel() {
         )
       })}
 
-      <div className="absolute bottom-4 left-1/2 flex -translate-x-1/2 gap-2">
+      <button type="button" disabled={reducedMotion} onClick={() => setPauseRequested((paused) => !paused)} aria-pressed={pauseRequested} className="absolute right-3 top-3 rounded-lg bg-black/70 px-3 py-2 text-xs font-semibold text-white focus-visible:outline-2 focus-visible:outline-offset-2 disabled:opacity-70">{reducedMotion ? "Autoplay off" : pauseRequested ? "Resume slideshow" : "Pause slideshow"}</button>
+      <div className="absolute bottom-3 left-1/2 flex -translate-x-1/2 gap-1">
         {slides.map((slide, index) => {
           const isActive = index === activeSlide
 
@@ -96,12 +110,11 @@ export function HeroImageCarousel() {
               key={slide.src}
               aria-label={`Show photo ${index + 1} of ${slides.length}`}
               aria-current={isActive ? "true" : undefined}
-              className={`h-2.5 rounded-full transition-all focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white ${
-                isActive ? "w-6 bg-white" : "w-2.5 bg-white/70 hover:bg-white"
-              }`}
+              className="flex h-10 w-8 items-center justify-center rounded-lg focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
               type="button"
               onClick={() => setActiveSlide(index)}
             >
+              <span aria-hidden="true" className={`h-2.5 rounded-full ${isActive ? "w-6 bg-white" : "w-2.5 bg-white/70"}`} />
               <span className="sr-only">{slide.alt}</span>
             </button>
           )

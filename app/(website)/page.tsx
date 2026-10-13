@@ -1,3 +1,4 @@
+import { fetchAllPublishedStories } from "@/lib/api/story-response"
 import { API_BASE } from "@/lib/api/base";
 import CallToActionSection from "@/components/home/CallToActionSection";
 import CompanyTrustSection from "@/components/home/CompanyTrustSection";
@@ -9,25 +10,21 @@ import HeroSection from "@/shared/HeroSection";
 
 async function getPublishedStories() {
   try {
-    const res = await fetch(`${API_BASE}/api/v1/real-shipment-stories?isPublished=true&limit=30`, {
-      next: { revalidate: 60 },
-    });
-    if (!res.ok) return [];
-    const json = await res.json();
-    return json.success && Array.isArray(json.data) ? json.data : [];
+    const stories = await fetchAllPublishedStories(`${API_BASE}/api/v1/real-shipment-stories`, { cache: "no-store" });
+    return { stories, failed: false };
   } catch {
-    return [];
+    return { stories: [], failed: true };
   }
 }
 
 export default async function Home() {
-  const stories = await getPublishedStories();
+  const { stories, failed } = await getPublishedStories();
 
   return (
     <div>
       <HeroSection />
       <StatsBar />
-      <ShipmentStoriesSection initialStories={stories} />
+      <ShipmentStoriesSection initialStories={stories} initialLoadError={failed} />
       <WhyStoriesMatterSection />
       <CallToActionSection />
       <CompanyTrustSection />

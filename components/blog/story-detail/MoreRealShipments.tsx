@@ -1,10 +1,10 @@
 import Image from "next/image"
 import Link from "next/link"
 import { ArrowRight, MapPin, Truck } from "lucide-react"
-import { ShipmentStory } from "@/types/shipmentStory"
+import { ShipmentStorySummary } from "@/types/shipmentStory"
 
 interface Props {
-  stories: ShipmentStory[]
+  stories: ShipmentStorySummary[]
 }
 
 export function MoreRealShipments({ stories }: Props) {

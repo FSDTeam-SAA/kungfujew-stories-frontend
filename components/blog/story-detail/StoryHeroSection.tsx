@@ -1,3 +1,4 @@
+import { storyStatusLabel } from "@/lib/story-status"
 import Image from "next/image"
 import { ShipmentStory } from "@/types/shipmentStory"
 
@@ -12,19 +13,7 @@ export function StoryHeroSection({ story }: Props) {
       story.image.startsWith("https://") ||
       story.image.startsWith("/"))
 
-  const statusDisplay = (() => {
-    switch (story.shipmentStatus) {
-      case "delivered":
-        return "Delivered Safely"
-      case "in_transit":
-        return "In Transit"
-      case "cancelled":
-        return "Cancelled"
-      case "pending":
-      default:
-        return "Dedicated Carrier"
-    }
-  })()
+  const statusDisplay = storyStatusLabel(story.shipmentStatus)
 
   return (
     <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-6xl pt-8 sm:pt-12 pb-6">
@@ -32,7 +21,7 @@ export function StoryHeroSection({ story }: Props) {
         
         {/* Left Headline & Meta */}
         <div className="lg:col-span-7 flex flex-col justify-center">
-          <h1 className="text-3xl sm:text-4xl lg:text-[46px] font-bold text-[#0a192f] tracking-tight leading-[1.15] mb-5">
+          <h1 className="break-words text-3xl sm:text-4xl lg:text-[46px] font-bold text-[#0a192f] tracking-tight leading-[1.15] mb-5">
             {story.title}
           </h1>
 
@@ -43,7 +32,7 @@ export function StoryHeroSection({ story }: Props) {
           )}
 
           {/* Metadata Fact Blocks */}
-          <div className="flex items-center gap-10 sm:gap-14 pt-6 border-t border-slate-200/80">
+          <div className="flex flex-wrap items-center gap-6 sm:gap-14 pt-6 border-t border-slate-200/80">
             <div>
               <span className="text-[10px] sm:text-[11px] font-bold tracking-widest text-slate-400 uppercase block mb-1">
                 SHIPMENT TYPE
@@ -55,7 +44,7 @@ export function StoryHeroSection({ story }: Props) {
 
             <div>
               <span className="text-[10px] sm:text-[11px] font-bold tracking-widest text-slate-400 uppercase block mb-1">
-                TRANSPORT METHOD
+                SHIPMENT STATUS
               </span>
               <span className="text-sm sm:text-base font-bold text-[#0a192f]">
                 {statusDisplay}

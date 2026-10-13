@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server"
+import { reviewSummary } from "@/lib/review-summary"
 
 interface GooglePlacesReview {
   author_name: string
@@ -24,7 +25,7 @@ export async function GET() {
       success: false,
       error: "MISSING_API_KEY",
       message:
-        "Please provide GOOGLE_PLACES_API_KEY in your .env file to fetch live reviews directly from Google Places API.",
+        "Reviews are currently unavailable. Read customer feedback on Google Maps.",
       reviews: [],
     })
   }
@@ -47,7 +48,7 @@ export async function GET() {
         success: false,
         error: "PLACE_NOT_FOUND",
         message:
-          "Could not locate Google Place ID for Car Carrier Group. Please specify GOOGLE_PLACE_ID in .env.",
+          "Reviews are currently unavailable. Read customer feedback on Google Maps.",
         reviews: [],
       })
     }
@@ -62,7 +63,7 @@ export async function GET() {
       return NextResponse.json({
         success: false,
         error: "GOOGLE_API_ERROR",
-        message: `Google Places API returned HTTP ${detailsRes.status}`,
+        message: "Reviews are temporarily unavailable.",
         reviews: [],
       })
     }
@@ -78,15 +79,14 @@ export async function GET() {
           date: rev.relative_time_description,
           rating: rev.rating,
           reviewText: rev.text,
-          verified: true,
+          verified: false,
         })
       )
 
       return NextResponse.json({
         success: true,
         source: "google_places_api",
-        total: data.result.user_ratings_total || reviews.length,
-        rating: data.result.rating || 5,
+        ...reviewSummary({ rating: data.result.rating, total: data.result.user_ratings_total }),
         reviews,
       })
     }
@@ -94,16 +94,15 @@ export async function GET() {
     return NextResponse.json({
       success: false,
       error: data.status,
-      message: data.error_message || "No reviews returned from Google API.",
+      message: "Reviews are currently unavailable.",
       reviews: [],
     })
-  } catch (error: unknown) {
-    const message = error instanceof Error ? error.message : "Unknown error"
+  } catch {
     return NextResponse.json(
       {
         success: false,
         error: "SERVER_FETCH_FAILED",
-        message,
+        message: "Reviews are temporarily unavailable.",
         reviews: [],
       },
       { status: 500 }

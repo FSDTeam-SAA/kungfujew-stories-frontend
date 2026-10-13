@@ -1,5 +1,6 @@
 "use client"
 
+import { fetchAllPublishedStories } from "@/lib/api/story-response"
 import { API_BASE } from "@/lib/api/base";
 
 import * as React from "react"
@@ -9,35 +10,21 @@ import { ArrowRight, MapPin, Truck } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { Skeleton } from "@/components/ui/skeleton"
 
-interface ShipmentStory {
-  _id: string
-  title: string
-  slug: string
-  metaDescription: string
-  content: string
-  pickupLocation: string
-  destination: string
-  shipmentType: string
-  shipmentStatus: string
-  serviceLine?: string
-  image?: string
-  imageAlt?: string
-  isPublished: boolean
-  createdAt: string
-}
+import type { ShipmentStorySummary } from "@/types/shipmentStory"
 
 interface ShipmentStoriesSectionProps {
-  initialStories?: ShipmentStory[]
+  initialStories?: ShipmentStorySummary[]
+  initialLoadError?: boolean
 }
 
 const CANDIDATE_CATEGORIES = [
   {
     label: "Vehicle Shipping",
-    matches: (s: ShipmentStory) => {
+    matches: (s: ShipmentStorySummary) => {
       const type = (s.shipmentType || "").toLowerCase().trim()
       const line = (s.serviceLine || "").toLowerCase().trim()
       const title = (s.title || "").toLowerCase().trim()
-      if (line === "vehicle") return true
+      if (line) return line === "vehicle"
       if (type === "vehicle shipping" || type.includes("vehicle")) return true
       if (/vehicle|car|auto|truck|suv|motorcycle|bike|van|sedan|coupe|transport/.test(type)) return true
       if (/\b(car|auto|truck|vehicle|suv|sedan|motorcycle)\b/.test(title)) return true
@@ -46,11 +33,11 @@ const CANDIDATE_CATEGORIES = [
   },
   {
     label: "Freight",
-    matches: (s: ShipmentStory) => {
+    matches: (s: ShipmentStorySummary) => {
       const type = (s.shipmentType || "").toLowerCase().trim()
       const line = (s.serviceLine || "").toLowerCase().trim()
       const title = (s.title || "").toLowerCase().trim()
-      if (line === "freight") return true
+      if (line) return line === "freight"
       if (type === "freight" || type.includes("freight")) return true
       if (/freight|cargo|pallet|ltl|ftl|dry van|flatbed|box truck|commercial/.test(type)) return true
       if (/\b(freight|cargo|pallet|ltl|ftl)\b/.test(title)) return true
@@ -59,11 +46,11 @@ const CANDIDATE_CATEGORIES = [
   },
   {
     label: "Heavy Equipment",
-    matches: (s: ShipmentStory) => {
+    matches: (s: ShipmentStorySummary) => {
       const type = (s.shipmentType || "").toLowerCase().trim()
       const line = (s.serviceLine || "").toLowerCase().trim()
       const title = (s.title || "").toLowerCase().trim()
-      if (line === "heavy-equipment") return true
+      if (line) return line === "heavy-equipment"
       if (type === "heavy equipment" || type.includes("heavy") || type.includes("equipment")) return true
       if (/heavy|equipment|machin|tractor|excavat|industrial|oversize|crane|loader|dozer|forklift/.test(type)) return true
       if (/\b(heavy|equipment|machinery|tractor|excavator|crane|dozer|forklift)\b/.test(title)) return true
@@ -72,7 +59,7 @@ const CANDIDATE_CATEGORIES = [
   },
   {
     label: "Auction Transportation",
-    matches: (s: ShipmentStory) => {
+    matches: (s: ShipmentStorySummary) => {
       const type = (s.shipmentType || "").toLowerCase().trim()
       const title = (s.title || "").toLowerCase().trim()
       if (type === "auction transportation" || type.includes("auction")) return true
@@ -83,7 +70,7 @@ const CANDIDATE_CATEGORIES = [
   },
   {
     label: "Classic & Exotic",
-    matches: (s: ShipmentStory) => {
+    matches: (s: ShipmentStorySummary) => {
       const type = (s.shipmentType || "").toLowerCase().trim()
       const title = (s.title || "").toLowerCase().trim()
       if (type === "classic & exotic" || type.includes("classic") || type.includes("exotic")) return true
@@ -95,41 +82,33 @@ const CANDIDATE_CATEGORIES = [
 ]
 
 export default function ShipmentStoriesSection({
-  initialStories = [],
+  initialStories,
+  initialLoadError = false,
 }: ShipmentStoriesSectionProps) {
   const [activeCategory, setActiveCategory] = React.useState("All Stories")
-  const [stories, setStories] = React.useState<ShipmentStory[]>(initialStories)
-  const [loading, setLoading] = React.useState(initialStories.length === 0)
+  const [stories, setStories] = React.useState<ShipmentStorySummary[]>(initialStories ?? [])
+  const [loading, setLoading] = React.useState(initialStories === undefined)
+  const [loadError, setLoadError] = React.useState(initialLoadError)
+  const [retryCount, setRetryCount] = React.useState(0)
 
   React.useEffect(() => {
-    if (initialStories.length > 0) return
-
-    let isMounted = true
-
+    if (initialStories !== undefined && retryCount === 0) return
+    const controller = new AbortController()
     async function loadStories() {
+      setLoading(true)
+      setLoadError(false)
       try {
-        const res = await fetch(
-          `${API_BASE}/api/v1/real-shipment-stories?isPublished=true&limit=30`
-        )
-        const json = await res.json()
-        if (isMounted && res.ok && json.success && Array.isArray(json.data)) {
-          setStories(json.data)
-        }
-      } catch (err) {
-        console.error("Error loading shipment stories:", err)
+        const result = await fetchAllPublishedStories(`${API_BASE}/api/v1/real-shipment-stories`, { signal: controller.signal, cache: "no-store" })
+        if (!controller.signal.aborted) setStories(result)
+      } catch {
+        if (!controller.signal.aborted) setLoadError(true)
       } finally {
-        if (isMounted) {
-          setLoading(false)
-        }
+        if (!controller.signal.aborted) setLoading(false)
       }
     }
-
-    loadStories()
-
-    return () => {
-      isMounted = false
-    }
-  }, [initialStories.length])
+    void loadStories()
+    return () => controller.abort()
+  }, [initialStories, retryCount])
 
   // Only show categories that have available stories in the published dataset
   const availableCategories = React.useMemo(() => {
@@ -185,7 +164,7 @@ export default function ShipmentStoriesSection({
   }
 
   const featuredStory = filteredStories.length > 0 ? filteredStories[0] : null
-  const gridStories = filteredStories.length > 1 ? filteredStories.slice(1, 4) : []
+  const gridStories = filteredStories.slice(1)
 
   // Ensure safe image URL
   const getSafeImage = (imgUrl?: string) => {
@@ -197,7 +176,7 @@ export default function ShipmentStoriesSection({
   }
 
   return (
-    <section className="w-full bg-white py-16 sm:py-32">
+    <section aria-busy={loading} aria-label="Shipment stories" className="w-full bg-white py-16 sm:py-32">
       {/* Aligned with Navbar & Hero */}
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         
@@ -238,6 +217,7 @@ export default function ShipmentStoriesSection({
                 key={category}
                 type="button"
                 onClick={() => setActiveCategory(category)}
+                aria-pressed={isActive}
                 className={`whitespace-nowrap px-4 py-2.5 rounded-lg text-xs sm:text-[13px] font-bold transition-all cursor-pointer shrink-0 ${
                   isActive
                     ? "bg-[#0d2861] text-white shadow-sm"
@@ -300,8 +280,15 @@ export default function ShipmentStoriesSection({
           </div>
         )}
 
+        {!loading && loadError && (
+          <div className="my-6 rounded-2xl border bg-slate-50 p-8 text-center">
+            <p role="alert" className="font-semibold text-[#0a192f]">Stories are temporarily unavailable.</p>
+            <p className="mt-2 text-sm text-slate-600">You can still request a quote above, or try loading stories again.</p>
+            <button type="button" onClick={() => setRetryCount((count) => count + 1)} className="mt-4 rounded-lg bg-[#0d2861] px-5 py-3 font-semibold text-white">Try again</button>
+          </div>
+        )}
         {/* Empty State */}
-        {!loading && filteredStories.length === 0 && (
+        {!loading && !loadError && filteredStories.length === 0 && (
           <div className="bg-slate-50 border border-slate-200 rounded-2xl p-12 text-center my-6">
             <div className="w-12 h-12 rounded-full bg-slate-200/70 flex items-center justify-center mx-auto mb-4 text-slate-500">
               <Truck className="w-6 h-6" />
@@ -324,7 +311,7 @@ export default function ShipmentStoriesSection({
         )}
 
         {/* Loaded Stories */}
-        {!loading && featuredStory && (
+        {!loading && !loadError && featuredStory && (
           <>
             {/* Featured Card (Top Large Card) */}
             <div className="bg-white border border-slate-200/80 rounded-2xl p-4 sm:p-5 mb-8 shadow-sm hover:shadow-md transition-shadow group">
@@ -400,7 +387,7 @@ export default function ShipmentStoriesSection({
               </div>
             </div>
 
-            {/* Bottom 3-Card Grid */}
+            {/* Remaining Stories */}
             {gridStories.length > 0 && (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
                 {gridStories.map((story) => (
@@ -446,9 +433,9 @@ export default function ShipmentStoriesSection({
 
                       {/* Title */}
                       <Link href={`/stories/${story.slug}`}>
-                        <h4 className="text-lg font-bold text-[#0a192f] tracking-tight mb-3 line-clamp-1 hover:text-[#0d2861] transition-colors">
+                        <h3 className="text-lg font-bold text-[#0a192f] tracking-tight mb-3 line-clamp-1 hover:text-[#0d2861] transition-colors">
                           {story.title}
-                        </h4>
+                        </h3>
                       </Link>
 
                       {/* Description */}

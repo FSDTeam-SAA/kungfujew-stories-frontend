@@ -34,7 +34,9 @@ export default function ShipmentFilterBar({
         <div className="relative mb-4">
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 stroke-[2]" />
           <input
-            type="text"
+            type="search"
+            aria-label="Search shipment stories"
+            maxLength={200}
             value={searchQuery}
             onChange={(e) => onSearchChange(e.target.value)}
             placeholder="Search real shipment stories..."
@@ -51,6 +53,7 @@ export default function ShipmentFilterBar({
                 key={category.value}
                 type="button"
                 onClick={() => onServiceLineChange(category.value)}
+                aria-pressed={isActive}
                 className={`whitespace-nowrap px-4 py-2.5 rounded-lg text-xs sm:text-[13px] font-bold transition-all cursor-pointer ${
                   isActive
                     ? "bg-[#0d2861] text-white shadow-sm"

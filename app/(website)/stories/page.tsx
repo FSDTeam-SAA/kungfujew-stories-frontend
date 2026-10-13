@@ -1,4 +1,6 @@
+import { serializeJsonLd } from "@/lib/json-ld"
 import type { Metadata } from "next"
+import { Suspense } from "react"
 import StoriesHero from "@/components/blog/StoriesHero"
 import { StoriesExplorer } from "@/components/blog/StoriesExplorer"
 import WhyStoriesMatterSection from "@/components/home/WhyStoriesMatterSection"
@@ -25,9 +27,9 @@ export default function StoriesPage() {
 
   return (
     <div>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(collectionSchema) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: serializeJsonLd(collectionSchema) }} />
       <StoriesHero />
-      <StoriesExplorer />
+      <Suspense fallback={<p role="status" className="p-8 text-center text-slate-600">Loading story explorer…</p>}><StoriesExplorer /></Suspense>
       <WhyStoriesMatterSection />
       <CallToActionSection />
       <CompanyTrustSection />

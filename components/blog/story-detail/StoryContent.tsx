@@ -10,7 +10,7 @@ export function StoryContent({ story }: Props) {
 
   return (
     <article
-      className="story-rendered-content ProseMirror bg-white border border-slate-200/70 rounded-3xl p-6 sm:p-10 shadow-sm leading-relaxed"
+      className="story-rendered-content ProseMirror min-w-0 overflow-x-auto break-words bg-white border border-slate-200/70 rounded-3xl p-6 sm:p-10 shadow-sm leading-relaxed"
       dangerouslySetInnerHTML={{ __html: sanitizeStoryContent(story.content) }}
     />
   )

@@ -1,3 +1,4 @@
+import { storyStatusLabel } from "@/lib/story-status"
 import { ShipmentStory } from "@/types/shipmentStory"
 
 interface Props {
@@ -5,19 +6,7 @@ interface Props {
 }
 
 export function StoryStatsBar({ story }: Props) {
-  const statusFormatted = (() => {
-    switch (story.shipmentStatus) {
-      case "delivered":
-        return "Delivered"
-      case "in_transit":
-        return "In Transit"
-      case "cancelled":
-        return "Cancelled"
-      case "pending":
-      default:
-        return "Scheduled Transport"
-    }
-  })()
+  const statusFormatted = storyStatusLabel(story.shipmentStatus)
 
   const stats = [
     {
@@ -33,7 +22,7 @@ export function StoryStatsBar({ story }: Props) {
       subtitle: story.shipmentType || "Vehicle Shipping",
     },
     {
-      title: "Transport Type",
+      title: "Shipment status",
       subtitle: statusFormatted,
       isCapitalize: true,
     },

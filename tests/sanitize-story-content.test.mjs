@@ -19,5 +19,11 @@ test("removes scripts, event handlers, and unsafe URLs", () => {
   )
 
   assert.doesNotMatch(html, /<script|onclick|onerror|javascript:|data:/)
-  assert.match(html, /<p>Safe<a>link<\/a><img alt="photo" \/><\/p>/)
+  assert.match(html, /<p>Safe<a>link<\/a><img alt="photo" loading="lazy" decoding="async" \/><\/p>/)
+})
+
+test("preserves editor alignment without accepting arbitrary CSS", () => {
+  const html = sanitizeStoryContent('<p style="text-align:center;position:fixed;color:red">Aligned</p>')
+  assert.match(html, /style="text-align:center"/)
+  assert.doesNotMatch(html, /position|color/)
 })

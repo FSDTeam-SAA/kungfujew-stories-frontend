@@ -21,3 +21,5 @@ export interface ShipmentStory {
   createdAt: string
   updatedAt?: string
 }
+
+export type ShipmentStorySummary = Omit<ShipmentStory, "content" | "faqs">

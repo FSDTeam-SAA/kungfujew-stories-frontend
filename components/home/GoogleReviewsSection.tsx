@@ -1,7 +1,8 @@
 "use client"
 
-import { useState, useEffect, useCallback } from "react"
+import { useState, useEffect } from "react"
 import Image from "next/image"
+import { reviewSummary } from "@/lib/review-summary"
 import { Star, ChevronLeft, ChevronRight, ExternalLink, MapPin } from "lucide-react"
 
 export const GOOGLE_REVIEWS_URL = "https://g.page/car-carrier-group/review?rc"
@@ -21,8 +22,7 @@ export default function GoogleReviewsSection() {
   const [loading, setLoading] = useState(true)
   const [currentIndex, setCurrentIndex] = useState(0)
   const [visibleCards, setVisibleCards] = useState(3)
-  const [isPaused, setIsPaused] = useState(false)
-  const [overallRating, setOverallRating] = useState<number>(5.0)
+  const [overallRating, setOverallRating] = useState<number | null>(null)
   const [totalRatings, setTotalRatings] = useState<number | null>(null)
 
   // Fetch live reviews directly from the Google API route
@@ -36,8 +36,9 @@ export default function GoogleReviewsSection() {
         if (ignore) return
         if (data.success && Array.isArray(data.reviews)) {
           setReviews(data.reviews)
-          if (data.rating) setOverallRating(data.rating)
-          if (data.total) setTotalRatings(data.total)
+          const summary = reviewSummary(data)
+          setOverallRating(summary.rating)
+          setTotalRatings(summary.total)
         }
       })
       .catch(() => {})
@@ -80,18 +81,10 @@ export default function GoogleReviewsSection() {
     setCurrentIndex((prev) => (prev > 0 ? prev - 1 : maxIndex))
   }
 
-  const handleNext = useCallback(() => {
+  const handleNext = () => {
     setCurrentIndex((prev) => (prev < maxIndex ? prev + 1 : 0))
-  }, [maxIndex])
+  }
 
-  // Auto-slide every 5 seconds if multiple cards are available
-  useEffect(() => {
-    if (isPaused || maxIndex <= 0) return
-    const interval = setInterval(() => {
-      handleNext()
-    }, 5000)
-    return () => clearInterval(interval)
-  }, [isPaused, maxIndex, handleNext])
 
   return (
     <section className="w-full bg-[#f8fafc] py-14 sm:py-18 lg:py-20 border-b border-slate-200/80">
@@ -120,14 +113,14 @@ export default function GoogleReviewsSection() {
                   d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"
                 />
               </svg>
-              <div className="flex items-center gap-0.5 text-amber-500">
+              {overallRating !== null && <div className="flex items-center gap-0.5 text-amber-500" aria-hidden="true">
                 {[...Array(5)].map((_, i) => (
-                  <Star key={i} className="h-3.5 w-3.5 fill-amber-400 stroke-amber-500" />
+                  <Star key={i} className={`h-3.5 w-3.5 stroke-amber-500 ${i < Math.round(overallRating ?? 0) ? "fill-amber-400" : "fill-none"}`} />
                 ))}
-              </div>
+              </div>}
               <span className="text-xs font-bold text-slate-700">
-                {overallRating.toFixed(1)} Star Rating
-                {totalRatings ? ` (${totalRatings}+ Reviews)` : ""}
+                {overallRating !== null ? `${overallRating.toFixed(1)} star rating` : "Customer reviews"}
+                {totalRatings !== null ? ` (${totalRatings} reviews)` : ""}
               </span>
             </div>
 
@@ -202,10 +195,10 @@ export default function GoogleReviewsSection() {
               <MapPin className="h-6 w-6" />
             </div>
             <h3 className="text-lg sm:text-xl font-bold text-[#0a192f] mb-2">
-              Live Google Reviews Stream
+              Customer reviews on Google
             </h3>
             <p className="text-sm text-slate-600 leading-relaxed mb-6">
-              Reviews in this section stream live directly from Google via the Google Places API. Add your Google Places API Key in <code className="px-1.5 py-0.5 bg-slate-100 rounded text-slate-800 font-mono text-xs">.env</code> to stream real-time client reviews.
+              Read customer feedback directly on Google Maps.
             </p>
             <a
               href={GOOGLE_REVIEWS_URL}
@@ -231,7 +224,7 @@ export default function GoogleReviewsSection() {
                 </div>
                 <div className="flex items-center gap-2">
                   <span className="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-md">
-                    Verified Google Review
+                    Google review
                   </span>
                   <svg className="h-4 w-4 shrink-0 opacity-80" viewBox="0 0 24 24" aria-hidden="true">
                     <path
@@ -284,7 +277,7 @@ export default function GoogleReviewsSection() {
                       {reviews[0].authorName}
                     </div>
                     <div className="text-xs text-slate-500 font-medium">
-                      {reviews[0].date} · Verified Shipper
+                      {reviews[0].date} · Google review
                     </div>
                   </div>
                 </div>
@@ -308,8 +301,6 @@ export default function GoogleReviewsSection() {
           <>
             <div
               className="relative overflow-hidden"
-              onMouseEnter={() => setIsPaused(true)}
-              onMouseLeave={() => setIsPaused(false)}
             >
               <div
                 className="flex transition-transform duration-500 ease-in-out -mx-3"
@@ -383,7 +374,7 @@ export default function GoogleReviewsSection() {
                             {review.authorName}
                           </div>
                           <div className="text-xs text-slate-500 font-medium">
-                            {review.date} · <span className="text-emerald-700 font-semibold">Verified</span>
+                            {review.date} · <span className="text-emerald-700 font-semibold">Google review</span>
                           </div>
                         </div>
                       </div>

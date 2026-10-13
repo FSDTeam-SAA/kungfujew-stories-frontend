@@ -1,3 +1,4 @@
+import { storyStatusLabel } from "@/lib/story-status"
 import { ShipmentStory } from "@/types/shipmentStory"
 import { QuoteLink } from "@/components/shared/QuoteLink"
 
@@ -6,19 +7,7 @@ interface Props {
 }
 
 export function StorySnapshotSidebar({ story }: Props) {
-  const statusDisplay = (() => {
-    switch (story.shipmentStatus) {
-      case "delivered":
-        return "Delivered Safely"
-      case "in_transit":
-        return "In Transit"
-      case "cancelled":
-        return "Cancelled"
-      case "pending":
-      default:
-        return "Scheduled"
-    }
-  })()
+  const statusDisplay = storyStatusLabel(story.shipmentStatus)
 
   return (
     <div className="sticky top-24">
@@ -60,7 +49,7 @@ export function StorySnapshotSidebar({ story }: Props) {
 
           <div>
             <span className="text-[11px] font-medium text-slate-400 block mb-0.5">
-              Status / Condition
+              Shipment status
             </span>
             <span className="text-sm font-bold text-[#0a192f] block capitalize">
               {statusDisplay}

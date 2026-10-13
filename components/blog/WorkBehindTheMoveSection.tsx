@@ -8,36 +8,33 @@ import Link from "next/link"
 import { ArrowRight, ChevronLeft, ChevronRight, MapPin, Truck } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { Skeleton } from "@/components/ui/skeleton"
+import { fetchStoryResponse, parsePublishedStoryList } from "@/lib/api/story-response"
+import { paginationPages } from "@/lib/pagination"
 import type { ServiceLine } from "@/lib/site"
 
-interface ShipmentStory {
-  _id: string
-  title: string
-  slug: string
-  metaDescription: string
-  content: string
-  pickupLocation: string
-  destination: string
-  shipmentType: string
-  shipmentStatus: string
-  serviceLine?: ServiceLine
-  image?: string
-  imageAlt?: string
-  isPublished: boolean
-  createdAt: string
-}
+import type { ShipmentStorySummary } from "@/types/shipmentStory"
 
 interface WorkBehindTheMoveSectionProps {
   serviceLine?: ServiceLine
   searchQuery?: string
+  page?: number
+  onPageChange?: (page: number) => void
 }
 
 export default function WorkBehindTheMoveSection({
   serviceLine,
   searchQuery = "",
+  page,
+  onPageChange,
 }: WorkBehindTheMoveSectionProps) {
-  const [currentPage, setCurrentPage] = React.useState(1)
-  const [stories, setStories] = React.useState<ShipmentStory[]>([])
+  const [localPage, setLocalPage] = React.useState(1)
+  const currentPage = page ?? localPage
+  const setCurrentPage = (value: number | ((current: number) => number)) => {
+    const next = typeof value === "function" ? value(currentPage) : value
+    if (onPageChange) onPageChange(next)
+    else setLocalPage(next)
+  }
+  const [stories, setStories] = React.useState<ShipmentStorySummary[]>([])
   const [totalPages, setTotalPages] = React.useState(1)
   const [loading, setLoading] = React.useState(true)
   const [loadError, setLoadError] = React.useState(false)
@@ -52,21 +49,19 @@ export default function WorkBehindTheMoveSection({
       try {
         const params = new URLSearchParams({
           isPublished: "true",
+          summary: "true",
           page: currentPage.toString(),
           limit: "9",
         })
         if (serviceLine) params.set("serviceLine", serviceLine)
         if (searchQuery.trim()) params.set("search", searchQuery.trim())
-        const res = await fetch(`${API_BASE}/api/v1/real-shipment-stories?${params}`, {
+        const body = await fetchStoryResponse(`${API_BASE}/api/v1/real-shipment-stories?${params}`, {
           signal: controller.signal,
         })
-        const json = await res.json()
-        if (!res.ok || !json.success || !Array.isArray(json.data)) {
-          throw new Error("Unable to load shipment stories")
-        }
+        const result = parsePublishedStoryList(body)
         if (controller.signal.aborted) return
-        setStories(json.data)
-        setTotalPages(json.pagination?.totalPages || 1)
+        setStories(result.data)
+        setTotalPages(Math.max(result.pagination.totalPages, 1))
       } catch (err) {
         if (controller.signal.aborted) return
         console.error("Error loading shipment stories:", err)
@@ -83,7 +78,7 @@ export default function WorkBehindTheMoveSection({
   const [prevFilters, setPrevFilters] = React.useState({ searchQuery, serviceLine })
   if (prevFilters.searchQuery !== searchQuery || prevFilters.serviceLine !== serviceLine) {
     setPrevFilters({ searchQuery, serviceLine })
-    setCurrentPage(1)
+    if (page === undefined) setLocalPage(1)
   }
 
   const featuredStory = stories.length > 0 ? stories[0] : null
@@ -98,7 +93,7 @@ export default function WorkBehindTheMoveSection({
   }
 
   return (
-    <section className="w-full bg-white py-12 sm:py-16">
+    <section aria-busy={loading} aria-label="Shipment story results" className="w-full bg-white py-12 sm:py-16">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Header Section */}
@@ -186,8 +181,9 @@ export default function WorkBehindTheMoveSection({
               No shipment stories found
             </p>
             <p className="text-xs sm:text-sm text-slate-500 max-w-sm mx-auto">
-              There are no published stories available at the moment.
+              Try a different route or keyword, or choose another service above.
             </p>
+            {currentPage > 1 && <button type="button" onClick={() => setCurrentPage(1)} className="mt-4 rounded-lg border px-4 py-3 font-semibold text-[#0d2861]">Back to first page</button>}
           </div>
         )}
 
@@ -320,7 +316,7 @@ export default function WorkBehindTheMoveSection({
 
             {/* Pagination Controls */}
             {totalPages > 1 && (
-              <div className="flex items-center justify-center gap-2">
+              <nav aria-label="Story pages" className="flex flex-wrap items-center justify-center gap-2">
                 <button
                   type="button"
                   onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
@@ -331,18 +327,21 @@ export default function WorkBehindTheMoveSection({
                   Previous
                 </button>
 
-                {Array.from({ length: totalPages }).map((_, i) => (
+                <span role="status" className="sr-only">Page {currentPage} of {totalPages}</span>
+                {paginationPages(currentPage, totalPages).map((page) => (
                   <button
-                    key={i + 1}
+                    key={page}
                     type="button"
-                    onClick={() => setCurrentPage(i + 1)}
-                    className={`w-9 h-8 text-xs font-semibold rounded-md flex items-center justify-center transition-colors ${
-                      currentPage === i + 1
+                    onClick={() => setCurrentPage(page)}
+                    aria-label={`Page ${page}`}
+                    aria-current={currentPage === page ? "page" : undefined}
+                    className={`min-w-10 h-10 text-xs font-semibold rounded-md flex items-center justify-center transition-colors ${
+                      currentPage === page
                         ? "bg-[#0d2861] text-white"
                         : "border border-slate-200 bg-white text-slate-700 hover:bg-slate-50"
                     }`}
                   >
-                    {i + 1}
+                    {page}
                   </button>
                 ))}
 
@@ -355,7 +354,7 @@ export default function WorkBehindTheMoveSection({
                   Next
                   <ChevronRight className="w-3.5 h-3.5" />
                 </button>
-              </div>
+              </nav>
             )}
           </>
         )}
