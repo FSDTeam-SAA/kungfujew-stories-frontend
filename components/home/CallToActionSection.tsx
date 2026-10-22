@@ -14,7 +14,7 @@ export default function CallToActionSection({
   storySlug,
 }: CallToActionSectionProps) {
   return (
-    <section className="relative w-full overflow-hidden bg-[#0d2861] py-14 sm:py-16 lg:py-20 text-white border-y border-blue-900/60">
+    <section data-section-reveal className="relative w-full overflow-hidden bg-[#0d2861] py-14 sm:py-16 lg:py-20 text-white border-y border-blue-900/60">
       {/* Background ambient lighting */}
       <div
         aria-hidden="true"
@@ -48,7 +48,7 @@ export default function CallToActionSection({
                 aria-label="Call Car Carrier Group directly at 888-702-7322"
                 className="group flex min-h-36 w-full flex-col items-center justify-center rounded-2xl border border-white/20 bg-white/[0.08] p-5 text-center shadow-lg transition-colors duration-200 hover:border-white/40 hover:bg-white/[0.14] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
               >
-                <div className="mb-3 flex h-11 w-11 items-center justify-center rounded-xl bg-[#d67d3e] text-white shadow-md transition-transform duration-200 group-hover:scale-105">
+                <div className="mb-3 flex h-11 w-11 items-center justify-center rounded-xl bg-[#d67d3e] text-white shadow-md">
                   <Phone className="h-5 w-5 fill-white stroke-none" aria-hidden="true" />
                 </div>
                 <span className="text-xs font-bold uppercase tracking-wider text-slate-300">Call us</span>
@@ -67,7 +67,7 @@ export default function CallToActionSection({
               >
                 <span className="flex items-center gap-2 text-lg font-bold uppercase tracking-wide text-[#0d2861] sm:text-xl">
                   Get an Instant Quote
-                  <ArrowRight className="h-5 w-5 shrink-0 transition-transform duration-200 group-hover:translate-x-1" aria-hidden="true" />
+                  <ArrowRight className="h-5 w-5 shrink-0" aria-hidden="true" />
                 </span>
                 <span className="mt-3 flex flex-wrap items-center justify-center gap-x-2 gap-y-1 text-xs font-bold uppercase tracking-wide text-slate-500">
                   {quoteServices.map((service, index) => (

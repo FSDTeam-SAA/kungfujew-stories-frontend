@@ -13,6 +13,7 @@ import { StoryTrustBar } from "./StoryTrustBar"
 import { MoreRealShipments } from "./MoreRealShipments"
 import { StoryFaqs } from "./StoryFaqs"
 import { StoryJsonLd } from "./StoryJsonLd"
+import { StoryReadershipTracker } from "./StoryReadershipTracker"
 
 export async function StoryDetailPage({ slug }: { slug: string }) {
   const story = await getStoryBySlug(slug)
@@ -23,6 +24,7 @@ export async function StoryDetailPage({ slug }: { slug: string }) {
   return (
     <div className="min-h-screen w-full bg-white">
       <StoryJsonLd story={story} />
+      <StoryReadershipTracker storyId={story._id} />
       <StoryHeroSection story={story} />
       <StoryStatsBar story={story} />
       <section className="container mx-auto max-w-6xl px-4 py-6 sm:px-6 sm:py-8 lg:px-8">

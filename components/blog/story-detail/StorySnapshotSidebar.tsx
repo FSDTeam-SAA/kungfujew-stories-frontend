@@ -10,7 +10,7 @@ export function StorySnapshotSidebar({ story }: Props) {
   const statusDisplay = storyStatusLabel(story.shipmentStatus)
 
   return (
-    <div className="sticky top-24">
+    <div className="story-sidebar">
       <div className="bg-[#f8fafc] border border-slate-200/90 rounded-2xl p-6 sm:p-7 shadow-[0_2px_12px_rgba(0,0,0,0.02)]">
         
         {/* Card Header */}
@@ -71,7 +71,7 @@ export function StorySnapshotSidebar({ story }: Props) {
           placement="story-sidebar"
           serviceLine={story.serviceLine}
           storySlug={story.slug}
-          className="mt-7 w-full block text-center py-3.5 px-6 rounded-xl bg-[#0d2861] hover:bg-[#091b42] text-white font-bold text-sm shadow-sm transition-all duration-200 cursor-pointer"
+          className="mt-7 w-full block text-center py-3.5 px-6 rounded-xl bg-[#0d2861] hover:bg-[#091b42] text-white font-bold text-sm shadow-sm transition-colors duration-200 cursor-pointer"
         >
           Request a quote from Car Carrier Group
         </QuoteLink>

@@ -23,7 +23,7 @@ const features = [
 
 export default function WhyStoriesMatterSection() {
   return (
-    <section className="w-full bg-[#f8fafc] py-16 sm:py-20 lg:py-24 border-t border-slate-200/70">
+    <section data-section-reveal className="w-full bg-[#f8fafc] py-16 sm:py-20 lg:py-24 border-t border-slate-200/70">
       {/* Aligned with Navbar container */}
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         
@@ -47,7 +47,7 @@ export default function WhyStoriesMatterSection() {
             return (
               <div
                 key={index}
-                className="group bg-white rounded-2xl border border-slate-200/90 p-7 sm:p-8 flex flex-col justify-start shadow-[0_2px_8px_rgba(0,0,0,0.03)] hover:shadow-lg hover:border-slate-300 hover:-translate-y-0.5 transition-all duration-200"
+                className="group bg-white rounded-2xl border border-slate-200/90 p-7 sm:p-8 flex flex-col justify-start shadow-[0_2px_8px_rgba(0,0,0,0.03)] hover:shadow-lg hover:border-slate-300 transition-colors duration-200"
               >
                 {/* Icon Container with subtle warm backdrop */}
                 <div className="mb-6 w-12 h-12 rounded-xl bg-orange-50/80 border border-orange-100 flex items-center justify-center text-[#c25e19]">

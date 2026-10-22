@@ -3,7 +3,7 @@
 import Image from "next/image"
 import Link from "next/link"
 import { Menu, X } from "lucide-react"
-import { useId, useState } from "react"
+import { useEffect, useId, useRef, useState } from "react"
 import { QuoteLink } from "@/components/shared/QuoteLink"
 
 const navLinks = [
@@ -15,9 +15,24 @@ const navLinks = [
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const menuId = useId()
+  const header = useRef<HTMLElement>(null)
+  const menuButton = useRef<HTMLButtonElement>(null)
+  useEffect(() => {
+    if (!header.current || !window.ResizeObserver) return
+    const observer = new ResizeObserver(([entry]) => {
+      document.documentElement.style.setProperty("--site-header-height", `${entry.target.getBoundingClientRect().height}px`)
+    })
+    observer.observe(header.current)
+    return () => {
+      observer.disconnect()
+      document.documentElement.style.removeProperty("--site-header-height")
+    }
+  }, [])
 
   return (
-    <header className="w-full bg-white border-b border-gray-100 shadow-[0_1px_3px_rgba(0,0,0,0.05)]">
+    <header ref={header} onKeyDown={(event) => {
+      if (event.key === "Escape" && isMenuOpen) { setIsMenuOpen(false); menuButton.current?.focus() }
+    }} className="sticky top-0 z-40 max-h-dvh w-full overflow-y-auto bg-white border-b border-gray-100 shadow-[0_1px_3px_rgba(0,0,0,0.05)]">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between py-4">
         
         {/* Logo Section */}
@@ -36,7 +51,7 @@ export default function Navbar() {
         <div className="flex items-center gap-3 lg:gap-10">
           
           {/* Menu Links */}
-          <nav className="hidden md:flex items-center gap-7 lg:gap-8">
+          <nav aria-label="Primary navigation" className="hidden md:flex items-center gap-7 lg:gap-8">
             {navLinks.map((link) => (
               <Link
                 key={link.title}
@@ -57,6 +72,7 @@ export default function Navbar() {
           </QuoteLink>
 
           <button
+            ref={menuButton}
             type="button"
             className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-lg text-[#0d2861] hover:bg-slate-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0d2861] md:hidden"
             aria-expanded={isMenuOpen}
