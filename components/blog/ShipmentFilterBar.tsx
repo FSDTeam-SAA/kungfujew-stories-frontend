@@ -40,7 +40,7 @@ export default function ShipmentFilterBar({
             value={searchQuery}
             onChange={(e) => onSearchChange(e.target.value)}
             placeholder="Search real shipment stories..."
-            className="w-full bg-white border border-slate-200/90 rounded-xl pl-11 pr-4 py-3.5 text-sm text-[#0a192f] placeholder:text-slate-400 focus:outline-none focus:ring-1 focus:ring-[#0d2861] focus:border-[#0d2861] transition-all shadow-[0_1px_2px_rgba(0,0,0,0.02)]"
+            className="w-full bg-white border border-slate-200/90 rounded-xl pl-11 pr-4 py-3.5 text-sm text-[#0a192f] placeholder:text-slate-400 focus:outline-none focus:ring-1 focus:ring-[#0d2861] focus:border-[#0d2861] transition-colors shadow-[0_1px_2px_rgba(0,0,0,0.02)]"
           />
         </div>
 
@@ -54,7 +54,7 @@ export default function ShipmentFilterBar({
                 type="button"
                 onClick={() => onServiceLineChange(category.value)}
                 aria-pressed={isActive}
-                className={`whitespace-nowrap px-4 py-2.5 rounded-lg text-xs sm:text-[13px] font-bold transition-all cursor-pointer ${
+                className={`whitespace-nowrap px-4 py-2.5 rounded-lg text-xs sm:text-[13px] font-bold transition-colors cursor-pointer ${
                   isActive
                     ? "bg-[#0d2861] text-white shadow-sm"
                     : "bg-white border border-slate-200/80 text-[#0a192f] hover:bg-slate-50 hover:border-slate-300"

@@ -35,6 +35,7 @@ const AUTO_ADVANCE_MS = 5_000
 
 export function HeroImageCarousel() {
   const [activeSlide, setActiveSlide] = useState(0)
+  const [instantSelection, setInstantSelection] = useState(false)
   const [hovered, setHovered] = useState(false)
   const [focused, setFocused] = useState(false)
   const [pauseRequested, setPauseRequested] = useState(false)
@@ -55,6 +56,7 @@ export function HeroImageCarousel() {
     }
 
     const intervalId = window.setInterval(() => {
+      setInstantSelection(false)
       setActiveSlide((currentSlide) => (currentSlide + 1) % slides.length)
     }, AUTO_ADVANCE_MS)
 
@@ -83,7 +85,7 @@ export function HeroImageCarousel() {
           <div
             key={slide.src}
             aria-hidden={!isActive}
-            className={`absolute inset-0 transition-opacity duration-700 ease-out motion-reduce:transition-none ${
+            className={`absolute inset-0 motion-reduce:transition-none ${instantSelection ? "transition-none" : "transition-opacity duration-[240ms] ease-[cubic-bezier(0.23,1,0.32,1)]"} ${
               isActive ? "opacity-100" : "pointer-events-none opacity-0"
             }`}
           >
@@ -112,7 +114,7 @@ export function HeroImageCarousel() {
               aria-current={isActive ? "true" : undefined}
               className="flex h-10 w-8 items-center justify-center rounded-lg focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
               type="button"
-              onClick={() => setActiveSlide(index)}
+              onClick={(event) => { setInstantSelection(event.detail === 0); setActiveSlide(index) }}
             >
               <span aria-hidden="true" className={`h-2.5 rounded-full ${isActive ? "w-6 bg-white" : "w-2.5 bg-white/70"}`} />
               <span className="sr-only">{slide.alt}</span>

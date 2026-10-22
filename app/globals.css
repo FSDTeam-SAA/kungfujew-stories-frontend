@@ -342,3 +342,35 @@
   background: #f8fafc;
   font-weight: 700;
 }
+
+:root {
+  --site-header-height: 97px;
+  --story-ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+html { scroll-padding-top: calc(var(--site-header-height) + 1rem); }
+:where(main [id], main :focus-visible) { scroll-margin-top: 1rem; }
+
+@media (min-width: 1024px) {
+  .story-sidebar { position: sticky; top: calc(var(--site-header-height) + 1rem); }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html { scroll-behavior: smooth; }
+  html:has(:focus-visible) { scroll-behavior: auto; }
+  [data-reveal-state] {
+    transition: transform 200ms var(--story-ease-out), opacity 200ms var(--story-ease-out);
+  }
+  [data-reveal-state="waiting"] { opacity: 0; transform: translateY(8px); }
+  [data-reveal-state="visible"] { opacity: 1; transform: translateY(0); }
+}
+
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .story-cover { transition: transform 160ms var(--story-ease-out); }
+  .group:hover .story-cover { transform: scale(1.02); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  [data-reveal-state] { opacity: 1; transform: none; transition: opacity 150ms var(--story-ease-out); }
+}
