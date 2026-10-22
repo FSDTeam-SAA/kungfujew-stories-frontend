@@ -20,7 +20,7 @@ const trustFeatures = [
 
 export default function CompanyTrustSection() {
   return (
-    <section className="w-full bg-[#f8fafc] py-16 sm:py-20 lg:py-24 border-b border-slate-200/80">
+    <section data-section-reveal className="w-full bg-[#f8fafc] py-16 sm:py-20 lg:py-24 border-b border-slate-200/80">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-6xl">
         
         {/* Header Block */}
@@ -43,7 +43,7 @@ export default function CompanyTrustSection() {
             return (
               <div
                 key={idx}
-                className="bg-white rounded-2xl border border-slate-200/90 p-7 sm:p-8 flex flex-col items-start shadow-xs hover:shadow-md hover:border-slate-300 transition-all duration-200"
+                className="bg-white rounded-2xl border border-slate-200/90 p-7 sm:p-8 flex flex-col items-start shadow-xs hover:shadow-md hover:border-slate-300 transition-colors duration-200"
               >
                 <div className="h-12 w-12 rounded-xl bg-blue-50 border border-blue-100/80 flex items-center justify-center text-[#0d2861] mb-5 shadow-xs">
                   <Icon className="h-6 w-6 stroke-[2]" />

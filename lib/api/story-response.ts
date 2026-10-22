@@ -24,6 +24,9 @@ export function parsePublishedStorySummary(value: unknown): ShipmentStorySummary
   const serviceLine = value.serviceLine
   if (value.isPublished !== true || (serviceLine !== "vehicle" && serviceLine !== "freight" && serviceLine !== "heavy-equipment"))
     throw new Error("Invalid published story response")
+  const position = value.coverPosition === undefined ? { x: 50, y: 50 } : value.coverPosition
+  if (!record(position) || ![position.x, position.y].every((coordinate) => typeof coordinate === "number" && Number.isFinite(coordinate) && coordinate >= 0 && coordinate <= 100))
+    throw new Error("Invalid cover position")
   return {
     _id: text("_id"), title: text("title"), slug: text("slug"),
     metaDescription: text("metaDescription"),
@@ -33,7 +36,7 @@ export function parsePublishedStorySummary(value: unknown): ShipmentStorySummary
     serviceLine, isPublished: true,
     image: safeStoryImage(value.image),
     imageAlt: typeof value.imageAlt === "string" ? value.imageAlt : undefined,
-
+    coverPosition: { x: position.x as number, y: position.y as number },
   }
 }
 

@@ -1,7 +1,6 @@
 "use client"
 
-import { fetchAllPublishedStories } from "@/lib/api/story-response"
-import { API_BASE } from "@/lib/api/base";
+import { RetryStoriesButton } from "@/components/shared/RetryStoriesButton"
 
 import * as React from "react"
 import Image from "next/image"
@@ -16,6 +15,8 @@ interface ShipmentStoriesSectionProps {
   initialStories?: ShipmentStorySummary[]
   initialLoadError?: boolean
 }
+
+const EMPTY_STORIES: ShipmentStorySummary[] = []
 
 const CANDIDATE_CATEGORIES = [
   {
@@ -86,29 +87,9 @@ export default function ShipmentStoriesSection({
   initialLoadError = false,
 }: ShipmentStoriesSectionProps) {
   const [activeCategory, setActiveCategory] = React.useState("All Stories")
-  const [stories, setStories] = React.useState<ShipmentStorySummary[]>(initialStories ?? [])
-  const [loading, setLoading] = React.useState(initialStories === undefined)
-  const [loadError, setLoadError] = React.useState(initialLoadError)
-  const [retryCount, setRetryCount] = React.useState(0)
-
-  React.useEffect(() => {
-    if (initialStories !== undefined && retryCount === 0) return
-    const controller = new AbortController()
-    async function loadStories() {
-      setLoading(true)
-      setLoadError(false)
-      try {
-        const result = await fetchAllPublishedStories(`${API_BASE}/api/v1/real-shipment-stories`, { signal: controller.signal, cache: "no-store" })
-        if (!controller.signal.aborted) setStories(result)
-      } catch {
-        if (!controller.signal.aborted) setLoadError(true)
-      } finally {
-        if (!controller.signal.aborted) setLoading(false)
-      }
-    }
-    void loadStories()
-    return () => controller.abort()
-  }, [initialStories, retryCount])
+  const stories = initialStories ?? EMPTY_STORIES
+  const loading = initialStories === undefined
+  const loadError = initialLoadError
 
   // Only show categories that have available stories in the published dataset
   const availableCategories = React.useMemo(() => {
@@ -206,7 +187,7 @@ export default function ShipmentStoriesSection({
                 <Link
                   key={category}
                   href="/stories"
-                  className="whitespace-nowrap px-4 py-2.5 rounded-lg text-xs sm:text-[13px] font-bold transition-all bg-white border border-slate-200/80 text-[#0a192f] hover:bg-slate-50 hover:border-slate-300 shrink-0"
+                  className="whitespace-nowrap px-4 py-2.5 rounded-lg text-xs sm:text-[13px] font-bold transition-colors bg-white border border-slate-200/80 text-[#0a192f] hover:bg-slate-50 hover:border-slate-300 shrink-0"
                 >
                   View All
                 </Link>
@@ -218,7 +199,7 @@ export default function ShipmentStoriesSection({
                 type="button"
                 onClick={() => setActiveCategory(category)}
                 aria-pressed={isActive}
-                className={`whitespace-nowrap px-4 py-2.5 rounded-lg text-xs sm:text-[13px] font-bold transition-all cursor-pointer shrink-0 ${
+                className={`whitespace-nowrap px-4 py-2.5 rounded-lg text-xs sm:text-[13px] font-bold transition-colors cursor-pointer shrink-0 ${
                   isActive
                     ? "bg-[#0d2861] text-white shadow-sm"
                     : "bg-white border border-slate-200/80 text-[#0a192f] hover:bg-slate-50 hover:border-slate-300"
@@ -284,7 +265,7 @@ export default function ShipmentStoriesSection({
           <div className="my-6 rounded-2xl border bg-slate-50 p-8 text-center">
             <p role="alert" className="font-semibold text-[#0a192f]">Stories are temporarily unavailable.</p>
             <p className="mt-2 text-sm text-slate-600">You can still request a quote above, or try loading stories again.</p>
-            <button type="button" onClick={() => setRetryCount((count) => count + 1)} className="mt-4 rounded-lg bg-[#0d2861] px-5 py-3 font-semibold text-white">Try again</button>
+            <RetryStoriesButton />
           </div>
         )}
         {/* Empty State */}
@@ -314,7 +295,7 @@ export default function ShipmentStoriesSection({
         {!loading && !loadError && featuredStory && (
           <>
             {/* Featured Card (Top Large Card) */}
-            <div className="bg-white border border-slate-200/80 rounded-2xl p-4 sm:p-5 mb-8 shadow-sm hover:shadow-md transition-shadow group">
+            <div className="bg-white border border-slate-200/80 rounded-2xl p-4 sm:p-5 mb-8 shadow-sm hover:shadow-md group">
               <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
                 
                 {/* Left Image */}
@@ -327,7 +308,8 @@ export default function ShipmentStoriesSection({
                       src={getSafeImage(featuredStory.image)}
                       alt={featuredStory.imageAlt || featuredStory.title}
                       fill
-                      className="object-cover group-hover:scale-[1.02] transition-transform duration-300"
+                      className="object-cover story-cover"
+                      style={{ objectPosition: `${featuredStory.coverPosition?.x ?? 50}% ${featuredStory.coverPosition?.y ?? 50}%` }}
                       sizes="(max-width: 1024px) 100vw, 50vw"
                     />
                   ) : (
@@ -393,7 +375,7 @@ export default function ShipmentStoriesSection({
                 {gridStories.map((story) => (
                   <div
                     key={story._id}
-                    className="bg-white border border-slate-200/80 rounded-2xl overflow-hidden flex flex-col shadow-sm hover:shadow-md transition-shadow group"
+                    className="bg-white border border-slate-200/80 rounded-2xl overflow-hidden flex flex-col shadow-sm hover:shadow-md group"
                   >
                     {/* Card Image */}
                     <Link href={`/stories/${story.slug}`} className="relative w-full aspect-[16/10] block overflow-hidden bg-slate-100">
@@ -402,7 +384,8 @@ export default function ShipmentStoriesSection({
                           src={getSafeImage(story.image)}
                           alt={story.imageAlt || story.title}
                           fill
-                          className="object-cover group-hover:scale-105 transition-transform duration-300"
+                          className="object-cover story-cover"
+                          style={{ objectPosition: `${story.coverPosition?.x ?? 50}% ${story.coverPosition?.y ?? 50}%` }}
                           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                         />
                       ) : (

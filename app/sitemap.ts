@@ -2,37 +2,17 @@ import { API_BASE } from "@/lib/api/base";
 import type { MetadataRoute } from "next"
 import { resources, services } from "@/lib/content"
 import { siteConfig } from "@/lib/site"
+import { fetchAllPublishedStories } from "@/lib/api/story-response"
 
 async function getPublishedStoryUrls() {
   try {
-    const storyUrls: MetadataRoute.Sitemap = []
-    let page = 1
-    let totalPages = 1
-
-    while (page <= totalPages) {
-      const response = await fetch(
-        `${API_BASE}/api/v1/real-shipment-stories?isPublished=true&limit=50&page=${page}`,
-        { next: { revalidate: 3600 } }
-      )
-      if (!response.ok) break
-      const body = await response.json()
-      if (!body.success || !Array.isArray(body.data)) break
-
-      storyUrls.push(
-        ...body.data
-          .filter((story: { isPublished?: boolean; slug?: string }) => story.isPublished !== false && story.slug)
-          .map((story: { slug: string; updatedAt?: string }) => ({
-            url: `${siteConfig.siteUrl}/stories/${story.slug}`,
-            lastModified: story.updatedAt ? new Date(story.updatedAt) : undefined,
-            changeFrequency: "monthly" as const,
-            priority: 0.7,
-          }))
-      )
-      totalPages = Number(body.pagination?.totalPages) || 1
-      page += 1
-    }
-
-    return storyUrls
+    const stories = await fetchAllPublishedStories(`${API_BASE}/api/v1/real-shipment-stories`, { next: { revalidate: 3600 } })
+    return stories.map((story) => ({
+      url: `${siteConfig.siteUrl}/stories/${encodeURIComponent(story.slug)}`,
+      lastModified: story.updatedAt && Number.isFinite(Date.parse(story.updatedAt)) ? new Date(story.updatedAt) : undefined,
+      changeFrequency: "monthly" as const,
+      priority: 0.7,
+    }))
   } catch {
     return []
   }

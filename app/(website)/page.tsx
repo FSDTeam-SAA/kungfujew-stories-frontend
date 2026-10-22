@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { fetchAllPublishedStories } from "@/lib/api/story-response"
 import { API_BASE } from "@/lib/api/base";
 import CallToActionSection from "@/components/home/CallToActionSection";
@@ -17,14 +18,18 @@ async function getPublishedStories() {
   }
 }
 
-export default async function Home() {
+async function PublishedStories() {
   const { stories, failed } = await getPublishedStories();
+  return <ShipmentStoriesSection initialStories={stories} initialLoadError={failed} />;
+}
+
+export default function Home() {
 
   return (
     <div>
       <HeroSection />
       <StatsBar />
-      <ShipmentStoriesSection initialStories={stories} initialLoadError={failed} />
+      <Suspense fallback={<p role="status" className="container py-12 text-slate-600">Loading shipment stories…</p>}><PublishedStories /></Suspense>
       <WhyStoriesMatterSection />
       <CallToActionSection />
       <CompanyTrustSection />

@@ -40,7 +40,7 @@ export function MoreRealShipments({ stories }: Props) {
           return (
             <div
               key={story._id}
-              className="bg-white border border-slate-200/80 rounded-2xl overflow-hidden flex flex-col shadow-sm hover:shadow-md transition-shadow group"
+              className="bg-white border border-slate-200/80 rounded-2xl overflow-hidden flex flex-col shadow-sm hover:shadow-md group"
             >
               {/* Image with Tag Overlay */}
               <Link
@@ -52,7 +52,8 @@ export function MoreRealShipments({ stories }: Props) {
                     src={img}
                     alt={story.imageAlt || story.title}
                     fill
-                    className="object-cover group-hover:scale-105 transition-transform duration-300"
+                    className="object-cover story-cover"
+                    style={{ objectPosition: `${story.coverPosition?.x ?? 50}% ${story.coverPosition?.y ?? 50}%` }}
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                   />
                 ) : (

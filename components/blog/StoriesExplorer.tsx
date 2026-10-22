@@ -1,56 +1,77 @@
 "use client"
 
-import { useEffect, useState } from "react"
-import { useSearchParams } from "next/navigation"
+import { useEffect, useRef, useState, useTransition } from "react"
+import { useRouter } from "next/navigation"
 import ShipmentFilterBar from "@/components/blog/ShipmentFilterBar"
-import WorkBehindTheMoveSection from "@/components/blog/WorkBehindTheMoveSection"
-import type { ServiceLine } from "@/lib/site"
+import { storyPageHref, type StoryQuery } from "@/lib/story-query"
 
-export function StoriesExplorer() {
-  const params = useSearchParams()
-  const search = (params.get("search") ?? "").slice(0, 200)
-  const line = params.get("serviceLine")
-  const serviceLine: ServiceLine | "all" = line === "vehicle" || line === "freight" || line === "heavy-equipment" ? line : "all"
-  const rawPage = Number(params.get("page") || 1)
-  const page = Number.isSafeInteger(rawPage) && rawPage >= 1 ? Math.min(rawPage, 1000000) : 1
-  const [searchQuery, setSearchQuery] = useState(search)
-  const [previousSearch, setPreviousSearch] = useState(search)
-  if (previousSearch !== search) { setPreviousSearch(search); setSearchQuery(search) }
-  const updateUrl = (changes: Record<string, string | undefined>, push = false) => {
-    const url = new URL(window.location.href)
-    for (const [key, value] of Object.entries(changes)) {
-      if (value) url.searchParams.set(key, value)
-      else url.searchParams.delete(key)
-    }
-    if (push) window.history.pushState(null, "", url)
-    else window.history.replaceState(null, "", url)
+export function StoriesExplorer({ query }: { query: StoryQuery }) {
+  const router = useRouter()
+  const [searchQuery, setSearchQuery] = useState(query.search)
+  const desired = useRef(query)
+  const timer = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const requested = useRef(new Set<string>())
+  const [pending, startTransition] = useTransition()
+
+  const cancelSearch = () => {
+    if (timer.current !== null) clearTimeout(timer.current)
+    timer.current = null
   }
+
   useEffect(() => {
-    if (searchQuery.trim() === search) return
-    const timer = window.setTimeout(() => {
-      const url = new URL(window.location.href)
-      if (searchQuery.trim()) url.searchParams.set("search", searchQuery.trim())
-      else url.searchParams.delete("search")
-      url.searchParams.delete("page")
-      window.history.replaceState(null, "", url)
-    }, 300)
-    return () => window.clearTimeout(timer)
-  }, [searchQuery, search])
+    // An older acknowledgement must not replace text typed since that request.
+    if (requested.current.delete(storyPageHref(query))) return
+    if (timer.current !== null) clearTimeout(timer.current)
+    timer.current = null
+    desired.current = query
+    setSearchQuery(query.search)
+  }, [query])
+
+  useEffect(() => {
+    const resetPending = () => {
+      requested.current.clear()
+      if (timer.current !== null) clearTimeout(timer.current)
+      timer.current = null
+    }
+    window.addEventListener("popstate", resetPending)
+    return () => {
+      resetPending()
+      window.removeEventListener("popstate", resetPending)
+    }
+  }, [])
+
+  const navigate = (next: StoryQuery, push: boolean) => {
+    const href = storyPageHref(next)
+    // Aborted navigations may never acknowledge; keep this bookkeeping bounded.
+    if (requested.current.size >= 32) requested.current.clear()
+    requested.current.add(href)
+    startTransition(() => {
+      if (push) router.push(href, { scroll: false })
+      else router.replace(href, { scroll: false })
+    })
+  }
 
   return (
-    <>
+    <div aria-busy={pending}>
       <ShipmentFilterBar
-        activeServiceLine={serviceLine}
+        activeServiceLine={query.serviceLine}
         searchQuery={searchQuery}
-        onServiceLineChange={(value) => updateUrl({ serviceLine: value === "all" ? undefined : value, page: undefined }, true)}
-        onSearchChange={setSearchQuery}
+        onServiceLineChange={(serviceLine) => {
+          cancelSearch()
+          desired.current = { ...desired.current, serviceLine, page: 1 }
+          navigate(desired.current, true)
+        }}
+        onSearchChange={(search) => {
+          setSearchQuery(search)
+          cancelSearch()
+          desired.current = { ...desired.current, search: search.trim(), page: 1 }
+          timer.current = setTimeout(() => {
+            timer.current = null
+            navigate(desired.current, false)
+          }, 300)
+        }}
       />
-      <WorkBehindTheMoveSection
-        serviceLine={serviceLine === "all" ? undefined : serviceLine}
-        searchQuery={search}
-        page={page}
-        onPageChange={(value) => updateUrl({ page: value === 1 ? undefined : String(value) }, true)}
-      />
-    </>
+      <p role="status" className="sr-only">{pending ? "Updating story results…" : ""}</p>
+    </div>
   )
 }

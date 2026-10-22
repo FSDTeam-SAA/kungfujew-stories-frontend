@@ -16,6 +16,7 @@ export interface ShipmentStory {
   shipmentStatus: "pending" | "in_transit" | "delivered" | "cancelled" | string
   image?: string
   imageAlt?: string
+  coverPosition?: { x: number; y: number }
   faqs?: FAQ[]
   isPublished?: boolean
   createdAt: string

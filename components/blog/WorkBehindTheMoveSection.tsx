@@ -1,96 +1,28 @@
-"use client"
-
-import { API_BASE } from "@/lib/api/base";
-
-import * as React from "react"
 import Image from "next/image"
 import Link from "next/link"
 import { ArrowRight, ChevronLeft, ChevronRight, MapPin, Truck } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { Skeleton } from "@/components/ui/skeleton"
-import { fetchStoryResponse, parsePublishedStoryList } from "@/lib/api/story-response"
+import { safeStoryImage as getSafeImage } from "@/lib/api/story-response"
+import { RetryStoriesButton } from "@/components/shared/RetryStoriesButton"
+import { storyPageHref, type StoryQuery } from "@/lib/story-query"
 import { paginationPages } from "@/lib/pagination"
-import type { ServiceLine } from "@/lib/site"
 
 import type { ShipmentStorySummary } from "@/types/shipmentStory"
 
 interface WorkBehindTheMoveSectionProps {
-  serviceLine?: ServiceLine
-  searchQuery?: string
-  page?: number
-  onPageChange?: (page: number) => void
+  stories: ShipmentStorySummary[]
+  query: StoryQuery
+  totalPages?: number
+  loadError?: boolean
+  loading?: boolean
 }
 
-export default function WorkBehindTheMoveSection({
-  serviceLine,
-  searchQuery = "",
-  page,
-  onPageChange,
-}: WorkBehindTheMoveSectionProps) {
-  const [localPage, setLocalPage] = React.useState(1)
-  const currentPage = page ?? localPage
-  const setCurrentPage = (value: number | ((current: number) => number)) => {
-    const next = typeof value === "function" ? value(currentPage) : value
-    if (onPageChange) onPageChange(next)
-    else setLocalPage(next)
-  }
-  const [stories, setStories] = React.useState<ShipmentStorySummary[]>([])
-  const [totalPages, setTotalPages] = React.useState(1)
-  const [loading, setLoading] = React.useState(true)
-  const [loadError, setLoadError] = React.useState(false)
-  const [retryCount, setRetryCount] = React.useState(0)
-
-  React.useEffect(() => {
-    const controller = new AbortController()
-
-    async function loadStories() {
-      setLoading(true)
-      setLoadError(false)
-      try {
-        const params = new URLSearchParams({
-          isPublished: "true",
-          summary: "true",
-          page: currentPage.toString(),
-          limit: "9",
-        })
-        if (serviceLine) params.set("serviceLine", serviceLine)
-        if (searchQuery.trim()) params.set("search", searchQuery.trim())
-        const body = await fetchStoryResponse(`${API_BASE}/api/v1/real-shipment-stories?${params}`, {
-          signal: controller.signal,
-        })
-        const result = parsePublishedStoryList(body)
-        if (controller.signal.aborted) return
-        setStories(result.data)
-        setTotalPages(Math.max(result.pagination.totalPages, 1))
-      } catch (err) {
-        if (controller.signal.aborted) return
-        console.error("Error loading shipment stories:", err)
-        setStories([])
-        setLoadError(true)
-      } finally {
-        if (!controller.signal.aborted) setLoading(false)
-      }
-    }
-    void loadStories()
-    return () => controller.abort()
-  }, [currentPage, searchQuery, serviceLine, retryCount])
-
-  const [prevFilters, setPrevFilters] = React.useState({ searchQuery, serviceLine })
-  if (prevFilters.searchQuery !== searchQuery || prevFilters.serviceLine !== serviceLine) {
-    setPrevFilters({ searchQuery, serviceLine })
-    if (page === undefined) setLocalPage(1)
-  }
-
+export default function WorkBehindTheMoveSection({ stories, query, totalPages = 1, loadError = false, loading = false }: WorkBehindTheMoveSectionProps) {
+  const currentPage = query.page
   const featuredStory = stories.length > 0 ? stories[0] : null
   const gridStories = stories.length > 1 ? stories.slice(1) : []
 
-  const getSafeImage = (imgUrl?: string) => {
-    if (!imgUrl || !imgUrl.trim()) return ""
-    if (imgUrl.startsWith("http://") || imgUrl.startsWith("https://") || imgUrl.startsWith("/")) {
-      return imgUrl
-    }
-    return ""
-  }
 
   return (
     <section aria-busy={loading} aria-label="Shipment story results" className="w-full bg-white py-12 sm:py-16">
@@ -161,13 +93,7 @@ export default function WorkBehindTheMoveSection({
             <p role="alert" className="text-base font-bold text-[#0a192f] mb-2">
               Could not load shipment stories
             </p>
-            <button
-              type="button"
-              onClick={() => setRetryCount((count) => count + 1)}
-              className="text-sm font-bold text-[#0d2861] underline focus-visible:outline-2 focus-visible:outline-offset-2"
-            >
-              Try again
-            </button>
+            <RetryStoriesButton />
           </div>
         )}
 
@@ -183,7 +109,7 @@ export default function WorkBehindTheMoveSection({
             <p className="text-xs sm:text-sm text-slate-500 max-w-sm mx-auto">
               Try a different route or keyword, or choose another service above.
             </p>
-            {currentPage > 1 && <button type="button" onClick={() => setCurrentPage(1)} className="mt-4 rounded-lg border px-4 py-3 font-semibold text-[#0d2861]">Back to first page</button>}
+            {currentPage > 1 && <Link href={storyPageHref(query, 1)} className="mt-4 inline-block rounded-lg border px-4 py-3 font-semibold text-[#0d2861]">Back to first page</Link>}
           </div>
         )}
 
@@ -200,10 +126,11 @@ export default function WorkBehindTheMoveSection({
                 >
                   {getSafeImage(featuredStory.image) ? (
                     <Image
-                      src={getSafeImage(featuredStory.image)}
+                      src={getSafeImage(featuredStory.image) || ""}
                       alt={featuredStory.imageAlt || featuredStory.title}
                       fill
-                      className="object-cover group-hover:scale-[1.02] transition-transform duration-300"
+                      className="object-cover story-cover"
+                      style={{ objectPosition: `${featuredStory.coverPosition?.x ?? 50}% ${featuredStory.coverPosition?.y ?? 50}%` }}
                       sizes="(max-width: 1024px) 100vw, 50vw"
                     />
                   ) : (
@@ -261,15 +188,16 @@ export default function WorkBehindTheMoveSection({
                 {gridStories.map((story) => (
                   <div
                     key={story._id}
-                    className="bg-white border border-slate-200/80 rounded-2xl overflow-hidden flex flex-col shadow-sm hover:shadow-md transition-shadow group"
+                    className="bg-white border border-slate-200/80 rounded-2xl overflow-hidden flex flex-col shadow-sm hover:shadow-md group"
                   >
                     <Link href={`/stories/${story.slug}`} className="relative w-full aspect-[16/10] block overflow-hidden bg-slate-100">
                       {getSafeImage(story.image) ? (
                         <Image
-                          src={getSafeImage(story.image)}
+                          src={getSafeImage(story.image) || ""}
                           alt={story.imageAlt || story.title}
                           fill
-                          className="object-cover group-hover:scale-105 transition-transform duration-300"
+                          className="object-cover story-cover"
+                          style={{ objectPosition: `${story.coverPosition?.x ?? 50}% ${story.coverPosition?.y ?? 50}%` }}
                           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                         />
                       ) : (
@@ -292,9 +220,9 @@ export default function WorkBehindTheMoveSection({
                       </div>
 
                       <Link href={`/stories/${story.slug}`}>
-                        <h4 className="text-lg font-bold text-[#0a192f] tracking-tight mb-3 line-clamp-1 hover:text-[#0d2861] transition-colors">
+                        <h3 className="text-lg font-bold text-[#0a192f] tracking-tight mb-3 line-clamp-1 hover:text-[#0d2861] transition-colors">
                           {story.title}
-                        </h4>
+                        </h3>
                       </Link>
 
                       <p className="text-xs sm:text-sm text-slate-500 font-normal leading-relaxed mb-6 flex-1 line-clamp-2">
@@ -317,22 +245,21 @@ export default function WorkBehindTheMoveSection({
             {/* Pagination Controls */}
             {totalPages > 1 && (
               <nav aria-label="Story pages" className="flex flex-wrap items-center justify-center gap-2">
-                <button
-                  type="button"
-                  onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-                  disabled={currentPage === 1}
-                  className="inline-flex items-center gap-1 px-3.5 py-2 text-xs font-semibold rounded-md border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                <Link
+                  href={storyPageHref(query, Math.max(currentPage - 1, 1))}
+                  aria-disabled={currentPage === 1}
+                  tabIndex={currentPage === 1 ? -1 : undefined}
+                  className="inline-flex items-center gap-1 px-3.5 py-2 text-xs font-semibold rounded-md border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 aria-disabled:opacity-40 aria-disabled:pointer-events-none transition-colors"
                 >
                   <ChevronLeft className="w-3.5 h-3.5" />
                   Previous
-                </button>
+                </Link>
 
                 <span role="status" className="sr-only">Page {currentPage} of {totalPages}</span>
                 {paginationPages(currentPage, totalPages).map((page) => (
-                  <button
+                  <Link
                     key={page}
-                    type="button"
-                    onClick={() => setCurrentPage(page)}
+                    href={storyPageHref(query, page)}
                     aria-label={`Page ${page}`}
                     aria-current={currentPage === page ? "page" : undefined}
                     className={`min-w-10 h-10 text-xs font-semibold rounded-md flex items-center justify-center transition-colors ${
@@ -342,18 +269,18 @@ export default function WorkBehindTheMoveSection({
                     }`}
                   >
                     {page}
-                  </button>
+                  </Link>
                 ))}
 
-                <button
-                  type="button"
-                  onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
-                  disabled={currentPage === totalPages}
-                  className="inline-flex items-center gap-1 px-4 py-2 text-xs font-semibold rounded-md bg-[#0d2861] text-white hover:bg-[#081a40] disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                <Link
+                  href={storyPageHref(query, Math.min(currentPage + 1, totalPages))}
+                  aria-disabled={currentPage === totalPages}
+                  tabIndex={currentPage === totalPages ? -1 : undefined}
+                  className="inline-flex items-center gap-1 px-4 py-2 text-xs font-semibold rounded-md bg-[#0d2861] text-white hover:bg-[#081a40] aria-disabled:opacity-40 aria-disabled:pointer-events-none transition-colors"
                 >
                   Next
                   <ChevronRight className="w-3.5 h-3.5" />
-                </button>
+                </Link>
               </nav>
             )}
           </>
